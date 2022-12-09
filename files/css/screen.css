@@ -1,0 +1,7 @@
+body { padding-top: 60px;       /* make room for top-fixed navbar */
+      font-size: 14pt;
+      line-height: 1.4em; }
+
+header h1 { font-size: 42pt; }
+
+footer { padding: 1em; text-align: center; }
