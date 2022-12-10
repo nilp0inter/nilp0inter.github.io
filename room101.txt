@@ -1,9 +1,0 @@
-# Room 101
-
-Room 101 holds 60 people.
-
-Equipment:
-
-  - blackboard
-  - overhead projector
-
