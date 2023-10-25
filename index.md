@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "nilp0inter's blog"
+title: "index"
 ---
 # nilp0inter's blog
 
