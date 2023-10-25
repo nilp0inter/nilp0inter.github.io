@@ -3,4 +3,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 title: "nilp0inter's blog" # the name of your site, e.g. ACME Corp.
 markdown: kramdown
 highlighter: rouge
+kramdown:
   input: GFM
+  syntax_highlighter_opts:
+    line_numbers: table
