@@ -2,3 +2,5 @@ url: "https://nilp0inter.github.io" # the base hostname & protocol for your site
 baseurl: "" # the subpath of your site, e.g. /blog
 title: "nilp0inter's blog" # the name of your site, e.g. ACME Corp.
 markdown: kramdown
+highlighter: rouge
+  input: GFM
