@@ -17,6 +17,11 @@ The general structure of the article is the following:
 4.  Examples of property based tests using hypothesis
 5.  Conclusion
 
+The target for this article is people that are already familiar with
+python and testing, but that are not familiar with property based testing
+or category theory.  So after every concept I will explain it in plain
+english and then show how it is used in software.
+
 -->
 
 # Property Based Testing - Retractions and Sections
@@ -37,25 +42,96 @@ is called a retraction section pair.
 ## Retractions and Sections
 
 First let me explain what a retraction section pair is.  A retraction
-section pair is a pair of functions $i\colon A\to B$ and $r\colon B\to A$
-such that $r\circ i = id_A$.  Here $id_A$ is the identity function on $A$.
+section pair is a pair of functions:
 
-## Definition
+* A section function: $i\colon A\to B$
+* A retraction function: $r\colon B\to A$
 
-An object $A$ in a category is called a **retract** of an object $B$ if there are morphisms $i\colon A\to B$ and $r \colon B\to A$ such that $r \circ i = id_A$. In this case $r$ is called a **retraction** of $B$ onto $A$.
+Such that when composed in a particular order they give the identity function
+on $A$.  That is $r\circ i = id_A$.  This is illustrated in the following
+diagram:
 
 $$
-  id 
+  id_A
     \;\colon\; 
   A \overset{section}{\underset{i}{\to}} B \overset{retraction}{\underset{r}{\to}} A
   \,.
 $$
 
-Here $i$ may also be called a _section_ of $r$. (In particular if $r$ is thought of as exhibiting a bundle; the terminology originates from topology.)
+In plain english this means that the section function $i$ knows how to
+transform each and every element of $A$ into an element of $B$, in such a way
+that the retraction function $r$ knows how to transform all elements of $B$
+back into the original elements of $A$.
+
+This abstract definition may seem uninteresting, but it is actually a very
+common pattern in software, and it is very useful when you consider practical
+instances of what $A$ and $B$ can be.
+
+For the rest of the article I am going to change the name of the sets to better
+reflect the kind of things that they can be.  I am going to call $A$ the
+*source* set and $B$ the *target* set.  I am also going to call the section
+function $i$ the *injector* and the retraction function $r$ the *extractor*.
+
+The revised diagram looks like this:
+
+$$
+  id_{source}
+    \;\colon\; 
+  source \overset{injector}{\to} target \overset{extractor}{\to} source
+  \,.
+$$
+
+## Examples of Retractions and Sections in Software
+
+Enough with the abstract definitions, let's see some examples of retractions
+and sections in software.
+
+<!--
+TODO: Examples to cover
+- serializers and deserializers (example: pickle, then name baseN family, json, yaml, etc)
+- compressors and decompressors
+- encryption and decryption
+- encoders and decoders
+
+NOTE: Show them in a table at the end
+
+-->
+
+### Serializers and Deserializers
+
+A very common example of a retraction section pair is a serializer and a
+deserializer.  A serializer is a function that takes a piece of data in some
+particular language and converts it into a string or a binary blob.  A
+deserializer is a function that takes a string or a binary blob and converts
+it back into the original data.
+
+For example, the python `pickle` module has two functions `dumps` and `loads`
+that are a retraction section pair.  The `dumps` function takes any python
+object and converts it into a binary blob.  The `loads` function takes that
+binary blob and converts it back into the original python object.
 
 ```python
-@given(st.bytes())
-def test_retraction(b):
-    assert unzip(zip(b)) == b
+import pickle
 
+def test_pickle():
+    obj = [1, 2, 3]
+    assert pickle.loads(pickle.dumps(obj)) == obj
 ```
+
+
+## Summary
+
+| Section | Retraction | Set $A$ | Set $B$ |
+|---------|------------|-------|-------|
+| b64encode | b64decode | binary data | base64 encoded string |
+| b32encode | b32decode | binary data | base32 encoded string |
+| b16encode | b16decode | binary data | base16 encoded string |
+| json.dumps | json.loads | python object | json string |
+| pickle.dumps | pickle.loads | python object | pickled string |
+| zlib.compress | zlib.decompress | binary data | compressed binary data |
+| gzip.compress | gzip.decompress | binary data | compressed binary data |
+| bz2.compress | bz2.decompress | binary data | compressed binary data |
+| lzma.compress | lzma.decompress | binary data | compressed binary data |
+
+
+
