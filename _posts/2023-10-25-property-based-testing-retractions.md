@@ -236,3 +236,69 @@ What is not part of the pattern is the following:
 Now that we have a better understanding of what retractions and sections are,
 let's talk about how we can test them.
 
+## Start with a golden test
+
+A golden test is a test that compares the output of a function to a known
+correct value.  For example, let's say we have a function *add* that adds two
+numbers together.
+
+```python
+def add(a, b):
+    return a + b
+```
+
+We can write a golden test for this function that compares the output of the
+function to a known correct value.
+
+```python
+def test_add():
+    assert add(1, 2) == 3
+```
+
+In the case of base64 encoding, we can write a golden test that compares the
+output of *b64encode* to a known correct value.
+
+```python
+import base64
+
+def test_b64encode():
+    expected = b"aGVsbG8gd29ybGQ="
+    actual = base64.b64encode(b"hello world")
+    assert actual == expected
+```
+
+The reason why a golden test is a good place to start is because it gives us a
+known correct value that we can use to test the inverse function.  If you recall
+from the previous section, there are several injector functions that share the
+same source set.  For example, *b64encode*, *b32encode*, and *b16encode* all
+take binary data and encode it into a string.  If we have a golden test for
+*b64encode* we are sure that the output of *b64encode* is a valid base64
+encoded string and not anything else.
+
+## Test the retraction section pair
+
+Up to this point our test strategy has been pretty straight forward.  We have
+written a golden test for the injector function.  But now is where we get the
+big hammer out.  We are going to test the retraction section pair.
+
+```python
+import base64
+
+from hypothesis import given, strategies as st
+
+@given(st.binary())
+def test_b64encode_b64decode(data):
+    assert base64.b64decode(base64.b64encode(data)) == data
+```
+
+The *@given* decorator tells the *hypothesis* library that we want to generate
+random values from the *st.binary()* strategy and pass them to the test
+function.  The *st.binary()* strategy generates random binary blobs of any
+length.  The *hypothesis* library will generate a bunch of random binary blobs
+and pass them to the test function.  The test function will then apply the
+injector function to the random binary blob and then apply the extractor
+function to the result.  If the extractor function is the inverse of the
+injector function, then the result should be the same as the original random
+binary blob.
+
+
