@@ -105,9 +105,9 @@ particular language and converts it into a string or a binary blob.  A
 deserializer is a function that takes a string or a binary blob and converts it
 back into the original data.
 
-For example, the python `pickle` module has two functions `dumps` and `loads`
-that are a retraction section pair.  The `dumps` function takes any python
-object and converts it into a binary blob.  The `loads` function takes that
+For example, the python *pickle* module has two functions *dumps* and *loads*
+that are a retraction section pair.  The *dumps* function takes any python
+object and converts it into a binary blob.  The *loads* function takes that
 binary blob and converts it back into the original python object.
 
 ```python
@@ -119,8 +119,8 @@ def test_pickle():
 ```
 
 In this case the source set is the set of all python objects* and the target set
-is the set of all binary blobs.  The injector function is `pickle.dumps` and
-the extractor function is `pickle.loads`.
+is the set of all binary blobs.  The injector function is *pickle.dumps* and
+the extractor function is *pickle.loads*.
 
 \* Actually the source set is the set of all python objects that can be
 pickled, but for the sake of this example let's ignore that.
@@ -133,9 +133,9 @@ A compressor is a function that takes a piece of data and compresses it into a
 *hopefully* smaller piece of data.  A decompressor is a function that takes
 that compressed piece of data and decompresses it back into the original data.
 
-For example, the python `zlib` module has two functions `compress` and
-`decompress` that are a retraction section pair.  The `compress` function takes
-any binary blob and compresses it into a smaller* binary blob. The `decompress`
+For example, the python *zlib* module has two functions *compress* and
+*decompress* that are a retraction section pair.  The *compress* function takes
+any binary blob and compresses it into a smaller* binary blob. The *decompress*
 function takes that compressed binary blob and decompresses it back into the
 original binary blob.
 
@@ -148,8 +148,8 @@ def test_zlib():
 ```
 
 In this case the source set is the set of all binary blobs and the target set
-is the set of all binary blobs.  The injector function is `zlib.compress` and
-the extractor function is `zlib.decompress`.
+is the set of all binary blobs.  The injector function is *zlib.compress* and
+the extractor function is *zlib.decompress*.
 
 \* Actually the compressed binary blob is not always smaller than the original,
 if you don't believe me try compressing a file that is already compressed.
@@ -163,9 +163,9 @@ An encoder is a function that takes a piece of data and encodes it into a
 string.  A decoder is a function that takes that string and decodes it back
 into the original data.
 
-For example, the python `base64` module has two functions `b64encode` and
-`b64decode` that are a retraction section pair.  The `b64encode` function takes
-any binary blob and encodes it into a string.  The `b64decode` function takes
+For example, the python *base64* module has two functions *b64encode* and
+*b64decode* that are a retraction section pair.  The *b64encode* function takes
+any binary blob and encodes it into a string.  The *b64decode* function takes
 that string and decodes it back into the original binary blob.
 
 ```python
@@ -178,7 +178,7 @@ def test_base64():
 
 In this case the source set is the set of all binary blobs and the target set
 is the set of base64 encoded strings.  The injector function is
-`base64.b64encode` and the extractor function is `base64.b64decode`.
+*base64.b64encode* and the extractor function is *base64.b64decode*.
 
 ## Summary
 
@@ -208,26 +208,26 @@ Let's look at some common patterns that we can see in the examples above.
   any value in the source set.  There are no values in the source set that
   cannot be injected into the target set.
 * Some of the injector functions share the same source set.  For example,
-  `b64encode`, `b32encode`, and `b16encode` all take binary data and encode it
-  into a string.  Similarly, `zlib.compress`, `gzip.compress`, `bz2.compress`,
-  and `lzma.compress` all take binary data and compress it into a smaller
+  *b64encode*, *b32encode*, and *b16encode* all take binary data and encode it
+  into a string.  Similarly, *zlib.compress*, *gzip.compress*, *bz2.compress*,
+  and *lzma.compress* all take binary data and compress it into a smaller
   binary blob.
 * None of the extractor functions share the same target set.  For example,
-  `b64decode`, `b32decode`, and `b16decode` all take a their respective encoded
-  string and decode it back into binary data.  Furthermore, `zlib.decompress`,
-  `gzip.decompress`, `bz2.decompress`, and `lzma.decompress` all take their
+  *b64decode*, *b32decode*, and *b16decode* all take a their respective encoded
+  string and decode it back into binary data.  Furthermore, *zlib.decompress*,
+  *gzip.decompress*, *bz2.decompress*, and *lzma.decompress* all take their
   respective compressed binary blob and decompress it back into binary data.
 
 What is not part of the pattern is the following:
 
 * The extractor function is not necessarily a total function.  That is, there
   may be values in the target set that cannot be extracted back into the
-  source set.  For example, if you try to decode with `b64decode` a string that
+  source set.  For example, if you try to decode with *b64decode* a string that
   is not a valid base64 encoded string, you will get an error.
 * The injector function is not necessarily the inverse of the extractor
   function.  That is, if you apply the extractor function to a value and then
   apply the injector function to the result, you may not get back the original
-  value.  For example, if you try to encode with `b64encode` a string that is
+  value.  For example, if you try to encode with *b64encode* a string that is
   not a valid base64 encoded string, you will get a different string.
 
 
