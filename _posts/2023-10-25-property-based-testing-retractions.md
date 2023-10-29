@@ -182,7 +182,7 @@ is the set of base64 encoded strings.  The injector function is
 
 ## Summary
 
-| injector | extractor | source | target |
+| injector function | extractor function | source set | target set |
 |---------|------------|-------|-------|
 | b64encode | b64decode | binary data | base64 encoded string |
 | b32encode | b32decode | binary data | base32 encoded string |
@@ -193,6 +193,10 @@ is the set of base64 encoded strings.  The injector function is
 | gzip.compress | gzip.decompress | binary data | gzip compressed binary data |
 | bz2.compress | bz2.decompress | binary data | bz2 compressed binary data |
 | lzma.compress | lzma.decompress | binary data | lzma compressed binary data |
+| codecs.decode* | codecs.encode | string | binary data |
+
+\* for codecs that can represent the full set of Unicode code points
+
 
 ## Observations
 
@@ -234,9 +238,10 @@ What is not part of the pattern is the following:
 # Testing Retractions and Sections
 
 Now that we have a better understanding of what retractions and sections are,
-let's talk about how we can test them.
+let's talk about how we can test them.  For this section we'll imagine that we
+are writing a base64 encoder and decoder.
 
-## Start with a golden test
+## Step 1: Write a Golden Test
 
 A golden test is a test that compares the output of a function to a known
 correct value.  For example, let's say we have a function *add* that adds two
@@ -275,7 +280,24 @@ take binary data and encode it into a string.  If we have a golden test for
 *b64encode* we are sure that the output of *b64encode* is a valid base64
 encoded string and not anything else.
 
-## Test the retraction section pair
+Note: If you want to have more than one golden test, you can make use of
+pytest's parametrize feature.
+
+```python
+import base64
+
+import pytest
+
+@pytest.mark.parametrize("data,expected", [
+    (b"hello world", b"aGVsbG8gd29ybGQ="),
+    (b"foo bar", b"Zm9vIGJhcg=="),
+])
+def test_b64encode(data, expected):
+    actual = base64.b64encode(data)
+    assert actual == expected
+```
+
+## Step 2: Write a Test for the Retraction Section Pair
 
 Up to this point our test strategy has been pretty straight forward.  We have
 written a golden test for the injector function.  But now is where we get the
@@ -330,7 +352,7 @@ import json
 from hypothesis import given, strategies as st
 
 json_serializable_strategy = st.recursive(
-    st.booleans() | st.floats() | st.text(),
+    st.none() | st.booleans() | st.floats() | st.text(),
     lambda children: st.lists(children) | st.dictionaries(st.text(), children),
 )
 
@@ -350,20 +372,86 @@ library allows us to define complex strategies that can generate random values
 from any set we want.  You can read more about the *hypothesis* library and
 strategies in the [hypothesis documentation](https://hypothesis.readthedocs.io/en/latest/data.html).
 
-## What we get out of this?
+We also can test the retraction section pair for *codecs.encode* and
+*codecs.decode* for the *utf-8* encoding.
 
-So what do we get out of this?  We get a lot of confidence that the extractor
-function is the inverse of the injector function. This is why:
+```python
+import codecs
 
-  * We have tested the injector function with a golden test, and we have tested
-    the retraction section pair with a bunch of random values.
-  * If the injector function is a total function, then we have tested the
-    injector function with every* possible value in the source set.
-  * If the extractor function is the inverse of the injector function, then we
-    have tested the retraction section pair with every possible value in the
-    source set.
+from hypothesis import given, strategies as st
 
-In summary, we have tested the injector function with every possible value in
-the source set, and we have tested the retraction section pair with every
-possible value in the source set.  This gives us a lot of confidence that the
-extractor function is the inverse of the injector function.
+def test_codecs_encode():
+    expected = b"hello world"
+    actual = codecs.encode("hello world", "utf-8")
+    assert actual == expected
+
+@given(st.text())
+def test_codecs_encode_codecs_decode(data):
+    assert codecs.decode(codecs.encode(data, "utf-8"), "utf-8") == data
+```
+
+## The benefits of testing retractions and sections
+
+Testing the retraction section pair gives helps us trust that the extractor
+function effectively reverses the injector function. 
+
+We've put the injector function through its paces with a golden test, and we've
+also tested the retraction section pair using a range of random values. 
+
+If the injector function is a total function, rest assured, we've tested it
+with every conceivable value from the source set. 
+
+Similarly, if the extractor function is the reverse of the injector function,
+we've made sure to test the retraction section pair with every possible value
+from the source set. 
+
+In essence, we've left no stone unturned. Both the injector function and the
+retraction section pair have been tested with every possible value in the
+source set. This thorough testing bolsters our confidence that the extractor
+function is indeed the inverse of the injector function.
+
+
+# A note on pureness
+
+Note: Pure functions are those who: They don't read or write to any files, they
+don't make any network requests, they don't mutate any global state, etc.
+
+Even though it may seem like this pattern can be extended to non-pure functions
+like a database query, in practice it is not a good idea.  Let's enumerate some
+non-pure functions that follow this pattern.
+
+  1. A database query that inserts a row into a table and returns the primary
+     key and a query that selects a row from a table given the primary key.
+  2. A function that writes a file to disk and a function that reads a file
+     from disk.
+  3. A function that sets an environment variable and a function that reads an
+     environment variable.
+
+The problem with testing these functions is that they are not referentialy
+transparent.  In other words, the output of the function depends on the state
+of the world.  Let's see what can go wrong if we try to test these functions.
+
+1. A database query that inserts a row into a table and returns the primary key
+   and a query that selects a row from a table given the primary key.
+  
+  * What would happen if the database is down?
+  * What would happen if we run out of primary keys?
+  * What if the database contains a unique constraint on one of the
+    columns?
+
+2. A function that writes a file to disk and a function that reads a file from
+   disk.
+  
+  * What if the file is not writable?
+  * What if the file is not readable?
+  * What if the filesystem is full?
+
+3. A function that sets an environment variable and a function that reads an
+    environment variable.
+  
+  * What happen if in between the time we set the environment variable and
+    the time we read the environment variable, another part of the program
+    sets the environment variable to something else?
+
+In all of these cases, the output of the function depends on the state of the
+world.
