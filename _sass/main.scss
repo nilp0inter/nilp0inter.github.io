@@ -7,16 +7,16 @@ body {
   text-align: justify;
 }
 
-a {color:#03f}
-a:visited {color:#7d013e}
+// a {color:#03f}
+// a:visited {color:#7d013e}
 
-/* Override styles for dark mode */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: black;
-        color: #d9d9d9;
-    }
-}
+// /* Override styles for dark mode */
+// @media (prefers-color-scheme: dark) {
+//     body {
+//         background-color: black;
+//         color: #d9d9d9;
+//     }
+// }
 
 h1,h2,h3{
   line-height:1.2
