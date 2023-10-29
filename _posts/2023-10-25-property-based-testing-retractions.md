@@ -301,4 +301,69 @@ function to the result.  If the extractor function is the inverse of the
 injector function, then the result should be the same as the original random
 binary blob.
 
+## Extending the pattern
 
+We can extend this pattern to other injector and extractor function pairs.  For
+example, we can test the retraction section pair for *gzip.compress* and
+*gzip.decompress*.
+
+```python
+import gzip
+
+from hypothesis import given, strategies as st
+
+def test_gzip_compress():
+    expected = b"\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03K\xcb\xcf\x07\x00\x82"
+    actual = gzip.compress(b"hello world")
+    assert actual == expected
+
+@given(st.binary())
+def test_gzip_compress_gzip_decompress(data):
+    assert gzip.decompress(gzip.compress(data)) == data
+```
+
+Or we can test the retraction section pair for *json.dumps* and *json.loads*.
+
+```python
+import json
+
+from hypothesis import given, strategies as st
+
+json_serializable_strategy = st.recursive(
+    st.booleans() | st.floats() | st.text(),
+    lambda children: st.lists(children) | st.dictionaries(st.text(), children),
+)
+
+def test_json_dumps():
+    expected = '{"hello": "world"}'
+    actual = json.dumps({"hello": "world"})
+    assert actual == expected
+
+@given(json_serializable_strategy)
+def test_json_dumps_json_loads(data):
+    assert json.loads(json.dumps(data)) == data
+```
+
+Note that in this example the source set is not binary data.  The source set is
+any value that can be serialized into JSON.  Thankfully, the *hypothesis*
+library allows us to define complex strategies that can generate random values
+from any set we want.  You can read more about the *hypothesis* library and
+strategies in the [hypothesis documentation](https://hypothesis.readthedocs.io/en/latest/data.html).
+
+## What we get out of this?
+
+So what do we get out of this?  We get a lot of confidence that the extractor
+function is the inverse of the injector function. This is why:
+
+  * We have tested the injector function with a golden test, and we have tested
+    the retraction section pair with a bunch of random values.
+  * If the injector function is a total function, then we have tested the
+    injector function with every* possible value in the source set.
+  * If the extractor function is the inverse of the injector function, then we
+    have tested the retraction section pair with every possible value in the
+    source set.
+
+In summary, we have tested the injector function with every possible value in
+the source set, and we have tested the retraction section pair with every
+possible value in the source set.  This gives us a lot of confidence that the
+extractor function is the inverse of the injector function.
