@@ -58,7 +58,7 @@ $$
   \,.
 $$
 
-In plain english this means that the section function $i$ knows how to
+In plain English this means that the section function $i$ knows how to
 transform each and every element of $A$ into an element of $B$, in such a way
 that the retraction function $r$ knows how to transform all elements of $B$
 back into the original elements of $A$.
@@ -102,8 +102,8 @@ NOTE: Show them in a table at the end
 A very common example of a retraction section pair is a serializer and a
 deserializer.  A serializer is a function that takes a piece of data in some
 particular language and converts it into a string or a binary blob.  A
-deserializer is a function that takes a string or a binary blob and converts
-it back into the original data.
+deserializer is a function that takes a string or a binary blob and converts it
+back into the original data.
 
 For example, the python `pickle` module has two functions `dumps` and `loads`
 that are a retraction section pair.  The `dumps` function takes any python
@@ -118,20 +118,121 @@ def test_pickle():
     assert pickle.loads(pickle.dumps(obj)) == obj
 ```
 
+In this case the source set is the set of all python objects* and the target set
+is the set of all binary blobs.  The injector function is `pickle.dumps` and
+the extractor function is `pickle.loads`.
+
+\* Actually the source set is the set of all python objects that can be
+pickled, but for the sake of this example let's ignore that.
+
+### Compressors and Decompressors
+
+Another example of a retraction section pair is a compressor and a decompressor.
+
+A compressor is a function that takes a piece of data and compresses it into a
+*hopefully* smaller piece of data.  A decompressor is a function that takes
+that compressed piece of data and decompresses it back into the original data.
+
+For example, the python `zlib` module has two functions `compress` and
+`decompress` that are a retraction section pair.  The `compress` function takes
+any binary blob and compresses it into a smaller* binary blob. The `decompress`
+function takes that compressed binary blob and decompresses it back into the
+original binary blob.
+
+```python
+import zlib
+
+def test_zlib():
+    data = b"hello world"
+    assert zlib.decompress(zlib.compress(data)) == data
+```
+
+In this case the source set is the set of all binary blobs and the target set
+is the set of all binary blobs.  The injector function is `zlib.compress` and
+the extractor function is `zlib.decompress`.
+
+\* Actually the compressed binary blob is not always smaller than the original,
+if you don't believe me try compressing a file that is already compressed.
+
+
+### Encoders and Decoders
+
+Another example of a retraction section pair is an encoder and a decoder.
+
+An encoder is a function that takes a piece of data and encodes it into a
+string.  A decoder is a function that takes that string and decodes it back
+into the original data.
+
+For example, the python `base64` module has two functions `b64encode` and
+`b64decode` that are a retraction section pair.  The `b64encode` function takes
+any binary blob and encodes it into a string.  The `b64decode` function takes
+that string and decodes it back into the original binary blob.
+
+```python
+import base64
+
+def test_base64():
+    data = b"hello world"
+    assert base64.b64decode(base64.b64encode(data)) == data
+```
+
+In this case the source set is the set of all binary blobs and the target set
+is the set of base64 encoded strings.  The injector function is
+`base64.b64encode` and the extractor function is `base64.b64decode`.
 
 ## Summary
 
-| Section | Retraction | Set $A$ | Set $B$ |
+| injector | extractor | source | target |
 |---------|------------|-------|-------|
 | b64encode | b64decode | binary data | base64 encoded string |
 | b32encode | b32decode | binary data | base32 encoded string |
 | b16encode | b16decode | binary data | base16 encoded string |
 | json.dumps | json.loads | python object | json string |
 | pickle.dumps | pickle.loads | python object | pickled string |
-| zlib.compress | zlib.decompress | binary data | compressed binary data |
-| gzip.compress | gzip.decompress | binary data | compressed binary data |
-| bz2.compress | bz2.decompress | binary data | compressed binary data |
-| lzma.compress | lzma.decompress | binary data | compressed binary data |
+| zlib.compress | zlib.decompress | binary data | zlib compressed binary data |
+| gzip.compress | gzip.decompress | binary data | gzip compressed binary data |
+| bz2.compress | bz2.decompress | binary data | bz2 compressed binary data |
+| lzma.compress | lzma.decompress | binary data | lzma compressed binary data |
+
+## Observations
+
+Let's look at some common patterns that we can see in the examples above.
+
+* Both the injector and the extractor are pure functions.  That is, they don't
+  have any side effects.  They don't read or write to any files, they don't
+  make any network requests, they don't mutate any global state, etc.
+* The extractor function is the inverse of the injector function.  That is, if
+  you apply the injector function to a value and then apply the extractor
+  function to the result, you get back the original value.
+* The injector function is a *total* function.  That is, it can be applied to
+  any value in the source set.  There are no values in the source set that
+  cannot be injected into the target set.
+* Some of the injector functions share the same source set.  For example,
+  `b64encode`, `b32encode`, and `b16encode` all take binary data and encode it
+  into a string.  Similarly, `zlib.compress`, `gzip.compress`, `bz2.compress`,
+  and `lzma.compress` all take binary data and compress it into a smaller
+  binary blob.
+* None of the extractor functions share the same target set.  For example,
+  `b64decode`, `b32decode`, and `b16decode` all take a their respective encoded
+  string and decode it back into binary data.  Furthermore, `zlib.decompress`,
+  `gzip.decompress`, `bz2.decompress`, and `lzma.decompress` all take their
+  respective compressed binary blob and decompress it back into binary data.
+
+What is not part of the pattern is the following:
+
+* The extractor function is not necessarily a total function.  That is, there
+  may be values in the target set that cannot be extracted back into the
+  source set.  For example, if you try to decode with `b64decode` a string that
+  is not a valid base64 encoded string, you will get an error.
+* The injector function is not necessarily the inverse of the extractor
+  function.  That is, if you apply the extractor function to a value and then
+  apply the injector function to the result, you may not get back the original
+  value.  For example, if you try to encode with `b64encode` a string that is
+  not a valid base64 encoded string, you will get a different string.
 
 
+# Testing Retractions and Sections
+
+Now that we have a better understanding of what retractions and sections are,
+let's talk about how we can test them.
 
