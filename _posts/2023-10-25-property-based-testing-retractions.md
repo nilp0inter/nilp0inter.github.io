@@ -488,12 +488,15 @@ of the world. Let's see what can go wrong if we try to test these functions.
    * What would be the outcome if the database is unavailable?
    * What would occur if we exhaust all available primary keys?
    * What if one of the columns in the database has a unique constraint?
+   * What if someone else deletes the row between the time we insert it and
+     select it?
 
 2. A function that writes a file to disk and a function that reads a file from
    disk.
    * What happens if the file cannot be written to?
    * What if the file cannot be read?
    * What if there is no more space available on the filesystem?
+   * What if the file is deleted between the time we write it and read it?
 
 3. A function that sets an environment variable and a function that reads an
     environment variable.
