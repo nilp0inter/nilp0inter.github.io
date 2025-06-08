@@ -7,7 +7,7 @@ title: "Property Based Testing - Induction"
 
 ## Introduction
 
-Property-based testing is a leap forward from traditional example-based tests. With tools like `pytest` and `hypothesis`, we can verify our code's behavior over a massive, randomized set of inputs. But what if we could go even deeper? What if, instead of just testing outputs, we could test the *rules* of our algorithm itself?
+Property-based testing is a leap forward from traditional example-based tests. With tools like *pytest* and *hypothesis*, we can verify our code's behavior over a massive, randomized set of inputs. But what if we could go even deeper? What if, instead of just testing outputs, we could test the *rules* of our algorithm itself?
 
 This is where a classic proof technique from mathematics, **mathematical induction**, provides an incredibly powerful mental model. By structuring our property-based tests to mirror induction, we can achieve a more profound level of confidence, verifying that the structural integrity of our code holds, no matter how large the input grows.
 
@@ -24,18 +24,18 @@ In programming, we can adapt this powerful structure. Instead of proving a prope
 
 ## From Theory to Practice: The Inductive Testing Pattern
 
-The structure of an inductive proof maps beautifully to `pytest` and `hypothesis`. We can write two distinct tests for any pure function that follows this pattern:
+The structure of an inductive proof maps beautifully to *pytest* and *hypothesis*. We can write two distinct tests for any pure function that follows this pattern:
 
 1.  A test for the **Base Case(s)**. This establishes our "first domino" using a simple, hardcoded assertion.
-2.  A test for the **Inductive Step**. This verifies the "chain reaction" using `hypothesis` to generate arbitrary inputs and check if the rule holds between one size and the next.
+2.  A test for the **Inductive Step**. This verifies the "chain reaction" using *hypothesis* to generate arbitrary inputs and check if the rule holds between one size and the next.
 
 Let's see this in action with common Python built-in functions, ordered from simplest to most conceptually complex.
 
 ---
 
-### Example 1: `sum()`
+### Example 1: *sum()*
 
-This is the canonical example. Its inductive property is simple and clear: the sum of a list is the sum of its first `n-1` elements plus the last element.
+This is the canonical example. Its inductive property is simple and clear: the sum of a list is the sum of its first *n-1* elements plus the last element.
 
 ```python
 # The function we are testing
@@ -45,7 +45,7 @@ from hypothesis import given, strategies as st
 
 #### Base Case
 
-The simplest case for `sum()` is an empty list, which should equal 0.
+The simplest case for *sum()* is an empty list, which should equal 0.
 
 ```python
 def test_sum_base_case():
@@ -70,9 +70,9 @@ def test_sum_inductive_step(lst):
 
 ---
 
-### Example 2: `pow(x, y)`
+### Example 2: *pow(x, y)*
 
-Exponentiation is another classic recursive function: for a positive integer exponent `y`, we can define $x^y$ as $x \times x^{y-1}$.
+Exponentiation is another classic recursive function: for a positive integer exponent *y*, we can define $x^y$ as $x \times x^{y-1}$.
 
 ```python
 # The function we are testing
@@ -109,9 +109,9 @@ def test_pow_inductive_step(x, y):
 
 ---
 
-### Example 3: `str.join()`
+### Example 3: *str.join()*
 
-This example moves from pure arithmetic to string manipulation. Joining a list of strings has a perfect inductive structure. The result of joining `n` strings is the result of joining `n-1` strings, followed by the separator and the `n`-th string.
+This example moves from pure arithmetic to string manipulation. Joining a list of strings has a perfect inductive structure. The result of joining *n* strings is the result of joining *n-1* strings, followed by the separator and the *n*-th string.
 
 #### Base Case
 
@@ -144,7 +144,7 @@ def test_join_inductive_step(lst):
 
 ---
 
-### Example 4: `min()` and `max()`
+### Example 4: *min()* and *max()*
 
 This example's simplest meaningful case is a two-element list, which distinguishes the two functions.
 
@@ -195,9 +195,9 @@ def test_max_inductive_step(lst):
 
 ---
 
-### Example 5: `collections.Counter`
+### Example 5: *collections.Counter*
 
-This final example introduces a more complex data structure. A `Counter` object aggregates counts, and its inductive step involves what looks like a stateful update.
+This final example introduces a more complex data structure. A *Counter* object aggregates counts, and its inductive step involves what looks like a stateful update.
 
 ```python
 from collections import Counter
@@ -215,7 +215,7 @@ def test_counter_base_case():
 
 #### Inductive Step
 
-We verify that creating a `Counter` from a list is equivalent to creating one from a smaller list and then updating it with the final element.
+We verify that creating a *Counter* from a list is equivalent to creating one from a smaller list and then updating it with the final element.
 
 ```python
 @given(st.lists(st.text(min_size=1), min_size=1))
@@ -241,22 +241,22 @@ Let's explicitly map the formal concepts of induction to the tests we just wrote
 
 | Mathematical Concept      | How It Appears in Our Tests                                                                                                 |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Base Case**             | The `test_*_base_case()` functions. They test the simplest meaningful input ($P(0)$), establishing a "ground truth" to build upon.      |
-| **Inductive Hypothesis**  | The *assumption* that the function works for a smaller input ($P(k)$). In `test_sum_inductive_step`, the call `sum(lst[:-1])` embodies this. |
-| **Inductive Step**        | The `assert` statement in the `test_*_inductive_step()` function. It verifies that the structural rule ($P(k) \implies P(k+1)$) holds. |
+| **Base Case**             | The *test_*_base_case()* functions. They test the simplest meaningful input ($P(0)$), establishing a "ground truth" to build upon.      |
+| **Inductive Hypothesis**  | The *assumption* that the function works for a smaller input ($P(k)$). In *test_sum_inductive_step*, the call *sum(lst[:-1])* embodies this. |
+| **Inductive Step**        | The *assert* statement in the *test_*_inductive_step()* function. It verifies that the structural rule ($P(k) \implies P(k+1)$) holds. |
 
-The most profound shift here is moving from testing *outputs* to testing *relationships*. A traditional test asserts `factorial(5) == 120`. An inductive test asserts `factorial(5) == 5 * factorial(4)`, which is a far more powerful statement about the function's internal logic. It verifies the algorithm itself.
+The most profound shift here is moving from testing *outputs* to testing *relationships*. A traditional test asserts *factorial(5) == 120*. An inductive test asserts *factorial(5) == 5 * factorial(4)*, which is a far more powerful statement about the function's internal logic. It verifies the algorithm itself.
 
 Let's summarize how this pattern applies to each function we've tested:
 
 | Function Tested           | Base Case ($P(0)$)                               | Inductive Step ($P(k) \implies P(k+1)$)                                                      |
 | ------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| **`sum()`**               | The sum of an empty list is 0.                  | `sum(lst)` equals `sum(lst[:-1]) + lst[-1]`.                                                 |
-| **`pow(x, y)`**           | A number to the power of 0 is 1.                | `pow(x, y)` equals `x * pow(x, y-1)`.                                                       |
-| **`str.join()`**          | Joining zero or one item works correctly.       | Joining `n` items is equivalent to joining `n-1` items, then adding the separator and the last item. |
-| **`min()`**               | The `min` of two elements is the smaller one.   | `min(lst)` equals `min(min(lst[:-1]), lst[-1])`.                                             |
-| **`max()`**               | The `max` of two elements is the larger one.    | `max(lst)` equals `max(max(lst[:-1]), lst[-1])`.                                             |
-| **`collections.Counter`** | A `Counter` of an empty sequence is empty.      | The `Counter` of a list is a `Counter` of its sublist, updated with the last element.        |
+| ```sum()```               | The sum of an empty list is 0.                  | *sum(lst)* equals *sum(lst[:-1]) + lst[-1]*.                                                 |
+| ```pow(x, y)```           | A number to the power of 0 is 1.                | *pow(x, y)* equals *x * pow(x, y-1)*.                                                       |
+| ```str.join()```          | Joining zero or one item works correctly.       | Joining *n* items is equivalent to joining *n-1* items, then adding the separator and the last item. |
+| ```min()```               | The *min* of two elements is the smaller one.   | *min(lst)* equals *min(min(lst[:-1]), lst[-1])*.                                             |
+| ```max()```               | The *max* of two elements is the larger one.    | *max(lst)* equals *max(max(lst[:-1]), lst[-1])*.                                             |
+| ```collections.Counter``` | A *Counter* of an empty sequence is empty.      | The *Counter* of a list is a *Counter* of its sublist, updated with the last element.        |
 
 ### From Theory to the Trenches: A Remark on Practicality
 
@@ -282,9 +282,9 @@ Next time you are working with a function that builds up a result incrementally 
 
 The examples in the main article use hardcoded values in their base cases to keep the focus on the inductive structure. While excellent for teaching, a core principle of property-based testing is to eliminate "magic values" and test properties over a wide range of inputs. This annex shows how to convert our hardcoded tests into more powerful, generalized property-based tests.
 
-#### Generalizing `pow()`'s Base Case
+#### Generalizing *pow()*'s Base Case
 
-Instead of testing `pow(2, 0)`, we can assert that `pow(x, 0)` is 1 for *any* integer `x`.
+Instead of testing *pow(2, 0)*, we can assert that *pow(x, 0)* is 1 for *any* integer *x*.
 
 ```python
 @given(st.integers())
@@ -293,9 +293,9 @@ def test_pow_base_case_generalized(x):
     assert pow(x, 0) == 1
 ```
 
-#### Generalizing `str.join()`
+#### Generalizing *str.join()*
 
-We can use `pytest.parametrize` for the simple base cases and also randomize the separator in the inductive step to make it more robust.
+We can use *pytest.parametrize* for the simple base cases and also randomize the separator in the inductive step to make it more robust.
 
 ```python
 import pytest
@@ -316,9 +316,9 @@ def test_join_inductive_step_generalized(separator, lst):
     assert separator.join(lst) == expected_full_join
 ```
 
-#### Generalizing `min()` and `max()` Base Cases
+#### Generalizing *min()* and *max()* Base Cases
 
-Instead of a single example like `[10, 5]`, we can generate any two integers and check the property.
+Instead of a single example like *[10, 5]*, we can generate any two integers and check the property.
 
 ```python
 @given(st.integers(), st.integers())
@@ -336,4 +336,4 @@ def test_max_base_case_generalized(a, b):
 
 #### A Note on Fixed Base Cases
 
-For functions like `sum()` and `Counter`, the base case is a single, fixed identity element (0 and an empty `Counter`, respectively). In these scenarios, the hardcoded base case is already the most general and correct form, so no change is needed. This demonstrates that the goal is not to eliminate all hardcoding, but to replace arbitrary examples with generalized properties wherever possible.
+For functions like *sum()* and *Counter*, the base case is a single, fixed identity element (0 and an empty *Counter*, respectively). In these scenarios, the hardcoded base case is already the most general and correct form, so no change is needed. This demonstrates that the goal is not to eliminate all hardcoding, but to replace arbitrary examples with generalized properties wherever possible.
