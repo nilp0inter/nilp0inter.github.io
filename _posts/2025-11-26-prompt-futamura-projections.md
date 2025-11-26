@@ -255,8 +255,10 @@ web page about Wikipedia itself outputs:
 
 ## Conclusion
 
-By applying the Futamura Projections to prompts, we prove that Natural Language in LLMs behaves remarkably like code in functional programming.
+This experiment wasn't about rigorous computer science; it was about seeing if the logic of code would map onto the logic of language. Surprisingly, it fit perfectly:
 
-1.  **Projection 1** creates **Apps** (Specific Prompts).
-2.  **Projection 2** creates **Factories** (Prompt Generators).
-3.  **Projection 3** creates **Factory Builders** (Generator Generators).
+* P1 gave us the Program (The Emoji Bot).
+* P2 gave us the Builder (The Tool that makes Bots).
+* P3 gave us the Architect (The Tool that makes Builders).
+
+It turns out that with enough recursion, you can prompt an LLM to simulate a compiler generator.
