@@ -3,6 +3,8 @@ layout: default
 title: "Prompt Futamura Projections"
 ---
 
+# Prompt Futamura Projections
+
 In computer science, the [**Futamura Projections**](https://en.wikipedia.org/wiki/Partial_evaluation) are a legendary concept connecting interpreters, compilers, and partial evaluators. They act as a bridge between "running code" and "compiling code."
 
 But what happens if we treat **Natural Language** as our programming code, and an **LLM** as our processor?
