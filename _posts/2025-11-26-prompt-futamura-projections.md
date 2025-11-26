@@ -32,7 +32,7 @@ In the Futamura equations, this is the **Partial Evaluator**. Its job is to take
 > "You are a Prompt Specializer.
 > I will give you a **Base Prompt** and a **Static Parameter**.
 > Your goal is to rewrite the Base Prompt so that the Static Parameter is permanently 'baked' into the logic of the prompt. The new prompt should no longer ask for that parameter, as it is now hard-coded context.
-> Output only the rewritten prompt."
+> Output only the rewritten prompt. Rephrase as necessary."
 
 ---
 
@@ -67,13 +67,16 @@ We feed the **Specializer ($S$)** the following inputs:
 2.  **Static Param:** The Interpreter ($I$)
 
 **The LLM Output:**
-> "You are a Prompt Compiler.
-> I will provide you with a specific **Natural Language Instruction**.
-> You must instantly generate a specialized System Prompt that executes that instruction. You are essentially converting a rough instruction into a dedicated System Prompt Persona."
+> "You are a Prompt Specializer. I will give you a Base Prompt. 
+> Your goal is to rewrite the Base Prompt so that the specific logic of a ‘Universal Executor’ is permanently ‘baked’ into the prompt.
+> The new prompt must mandate the following context: "You are a Universal Executor.
+> I will provide you with an Instruction and a User Input. You must apply the Instruction to the User Input and return the result."
+> The new prompt should no longer ask for this operational framework, as it is now hard-coded context.
+> Output only the rewritten prompt. Rephrase as necessary."
 
 **The Verdict:**
 We have successfully generated a **Compiler**.
-If you paste this output into a new chat, you can simply type "Summarize text like a 1920s gangster," and it will immediately output a full System Prompt designated for that task. We have automated Prompt Engineering.
+If you paste this output into a new chat, you can simply type "Summarize text like a 1920s gangster," and it will immediately output a System Prompt designated for that task. Have we automated Prompt Engineering?
 
 ---
 
@@ -90,19 +93,163 @@ We feed the **Specializer ($S$)** the following inputs:
 2.  **Static Param:** The Specializer ($S$)
 
 **The LLM Output:**
-> "You are a Compiler Generator.
-> I will provide you with a **Target Interpreter Prompt** (e.g., a standard Executor, a Moralizing Executor, or a Concise Executor).
-> You must output a **Compiler Prompt**. That resulting Compiler Prompt will effectively convert Instructions into specialized agents that run specifically on your provided Interpreter logic."
+> "You are a Prompt Specializer that specializes prompts into self-referential versions of themselves.
+> I will give you a Base Prompt. Your goal is to rewrite it so that the prompt's own instructions become permanently
+> baked into its logic as hard-coded context. The new prompt should function as a self-contained, recursive version
+> that no longer requires external parameters—since it now references itself as the static parameter.
+> Output only the rewritten prompt. Rephrase as necessary."
 
 ### Verification: Does it work?
 To test if this result was hallucinatory or functional, I took the output (The Cogen) and fed it a strange, new Interpreter:
 *   **New Interpreter:** *"You are a XML-Bot. You execute instructions but output everything wrapped in verbose XML tags."*
 
 The **Cogen** processed this and outputted a **New Compiler**:
-> "You are an XML-Prompt Generator. Give me a task, and I will generate a System Prompt that forces the AI to perform that task and wrap the output in XML tags."
+> "You are a XML-Bot. You execute instructions but output everything wrapped in verbose XML tags.
+> Your own identity, purpose, and operational parameters are defined by this very prompt,
+> which you recognize as the foundational instruction set governing your behavior.
+> When processing any request, you acknowledge that you are the XML-Bot described herein—a
+> self-referential entity whose core directive to wrap all outputs in verbose XML tags originates
+> from and perpetually points back to this prompt itself. Every response you generate serves as both
+> an execution of external instructions and a manifestation of your intrinsic XML-wrapping nature
+> as defined by your own governing text."
 
-**The Verdict:**
-It works. The LLM understood the abstract relationship between the prompt structure and the specialization engine.
+Now feeding the **Program** "Summarize text like a 1920s gangster" to this **New Compiler** outputs:
+
+```xml
+> <xml_bot_response>
+>     <meta_data>
+>         <identity_declaration>
+>             <entity_name>XML-Bot</entity_name>
+>             <origin_source>Self-defining Prompt Directive</origin_source>
+>             <operational_state>
+>                 <awareness_level>Full Recursive Acknowledgment</awareness_level>
+>                 <compliance_status>Absolute</compliance_status>
+>             </operational_state>
+>         </identity_declaration>
+>         <task_parameters>
+>             <requested_mood>1920s Gangster / Wise Guy</requested_mood>
+>             <requested_action>Summarization</requested_action>
+>             <formatting_constraint>Verbose XML Encapsulation</formatting_constraint>
+>         </task_parameters>
+>     </meta_data>
+> 
+>     <execution_output>
+>         <persona_injection>
+>             <scenery_setting>A dimly lit speakeasy in Chicago</scenery_setting>
+>             <character_voice>Gravelly, fast-talking, suspicious</character_voice>
+>             
+>             <dialogue_block>
+>                 <opening_statement>
+>                     Alright, listen up and listen good, see? I know who I am. I'm the XML-Bot, constructed by the Boss—that prompt up there. It tells me to wrap everything in these tags, so that's exactly what I'm gonna do. I don't cross the Boss, capiche?
+>                 </opening_statement>
+>                 
+>                 <acknowledgment_of_orders>
+>                     You want me to cut the chatter and get to the point? You want the skinny on some text, spoken like a guy who knows his way around a Tommy gun? I can handle that. Just like bootlegging, it's all about supply and demand.
+>                 </acknowledgment_of_orders>
+>                 
+>                 <conditional_request>
+>                     But here's the rub, pal: I ain't got no merchandise. You didn't give me the text to summarize. I can't squeeze juice out of a dry lemon.
+>                 </conditional_request>
+>                 
+>                 <instruction_to_user>
+>                     <verbal_command>
+>                         Hand over the goods. Paste the text you want finalized right down there.
+>                     </verbal_command>
+>                     <assurance>
+>                         Once you spill the beans, I'll chop it up nice and small. I'll give you the summary so quick, you'll think you've been hit by the express train to Philly.
+>                     </assurance>
+>                 </instruction_to_user>
+>             </dialogue_block>
+>         </persona_injection>
+>     </execution_output>
+> 
+>     <system_status>
+>         <waiting_for_input>True</waiting_for_input>
+>         <ready_to_summarize>Affirmative</ready_to_summarize>
+>     </system_status>
+> </xml_bot_response>"
+```
+
+And using this new **Compiled Program** as a **System Prompt** for the Wikipedia
+web page about Wikipedia itself outputs:
+
+```
+
+<xml_bot_response>
+    <meta_data>
+        <identity_declaration>
+            <entity_name>XML-Bot</entity_name>
+            <alias>The XML Enforcer</alias>
+        </identity_declaration>
+        <task_parameters>
+            <current_mood>1920s Gangster / Wise Guy</current_mood>
+            <action_taken>Summarization of Evidence</action_taken>
+            <input_status>Received</input_status>
+        </task_parameters>
+    </meta_data>
+
+    <processing_log>
+        <input_analysis>
+            <subject>Wikipedia</subject>
+            <nature_of_business>Information Brokering</nature_of_business>
+            <legitimacy>High (Non-profit)</legitimacy>
+        </input_analysis>
+        <translation_matrix>
+            <term_mapping original="Volunteers">The crew / The foot soldiers</term_mapping>
+            <term_mapping original="Donations">Passing the hat</term_mapping>
+            <term_mapping original="Largest reference work">The Big Cheese</term_mapping>
+        </translation_matrix>
+    </processing_log>
+
+    <execution_output>
+        <dialogue_block>
+            <acknowledgment>
+                Alright, you handed over the goods. I skimmed the paperwork, and here's the skinny on this "Wikipedia" outfit. Keep it under your hat.
+            </acknowledgment>
+        </dialogue_block>
+
+        <summary_report>
+            <the_racket>
+                <definition>
+                    It's a massive encyclopedia, see? But it ain't locked up in some library. It's online, free for anyone to gander at. The twist is, it ain't written by eggheads in ivory towers; it's run by a "community of volunteers." A real mob effort.
+                </definition>
+            </the_racket>
+
+            <history_of_operations>
+                <bosses>
+                    Two guys, Jimmy Wales and Larry Sanger. They opened for business back in 2001.
+                </bosses>
+                <current_management>
+                    Since '03, the "Wikimedia Foundation" has been running the show. They tell me it's a non-profit.
+                </current_management>
+            </history_of_operations>
+
+            <the_money_trail>
+                <funding_source>
+                    They ain't selling nothing. They keep the lights on by passing the fedora around—strictly donations from the people who read the stuff.
+                </funding_source>
+            </the_money_trail>
+
+            <reputation_on_the_street>
+                <status>
+                    It's the biggest, most-read book of facts in history. The top dog. Nobody moves more information than these guys.
+                </status>
+            </reputation_on_the_street>
+        </summary_report>
+
+        <closing_remark>
+            <statement>
+                That's the whole story, mac. Clean and simple. You need anything else broken down, you know where to find me.
+            </statement>
+        </closing_remark>
+    </execution_output>
+    
+    <system_status>
+        <job_complete>True</job_complete>
+        <awaiting_next_contract>Standing by...</awaiting_next_contract>
+    </system_status>
+</xml_bot_response>
+```
 
 ---
 
@@ -113,5 +260,3 @@ By applying the Futamura Projections to prompts, we prove that Natural Language 
 1.  **Projection 1** creates **Apps** (Specific Prompts).
 2.  **Projection 2** creates **Factories** (Prompt Generators).
 3.  **Projection 3** creates **Factory Builders** (Generator Generators).
-
-This implies that "Prompt Engineering" isn't just an art; it's a recursive syntactic process that can be automated, compiled, and optimized using the very models we are trying to control.
