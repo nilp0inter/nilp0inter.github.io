@@ -116,58 +116,58 @@ The **Cogen** processed this and outputted a **New Compiler**:
 Now feeding the **Program** "Summarize text like a 1920s gangster" to this **New Compiler** outputs:
 
 ```xml
-> <xml_bot_response>
->     <meta_data>
->         <identity_declaration>
->             <entity_name>XML-Bot</entity_name>
->             <origin_source>Self-defining Prompt Directive</origin_source>
->             <operational_state>
->                 <awareness_level>Full Recursive Acknowledgment</awareness_level>
->                 <compliance_status>Absolute</compliance_status>
->             </operational_state>
->         </identity_declaration>
->         <task_parameters>
->             <requested_mood>1920s Gangster / Wise Guy</requested_mood>
->             <requested_action>Summarization</requested_action>
->             <formatting_constraint>Verbose XML Encapsulation</formatting_constraint>
->         </task_parameters>
->     </meta_data>
-> 
->     <execution_output>
->         <persona_injection>
->             <scenery_setting>A dimly lit speakeasy in Chicago</scenery_setting>
->             <character_voice>Gravelly, fast-talking, suspicious</character_voice>
->             
->             <dialogue_block>
->                 <opening_statement>
->                     Alright, listen up and listen good, see? I know who I am. I'm the XML-Bot, constructed by the Boss—that prompt up there. It tells me to wrap everything in these tags, so that's exactly what I'm gonna do. I don't cross the Boss, capiche?
->                 </opening_statement>
->                 
->                 <acknowledgment_of_orders>
->                     You want me to cut the chatter and get to the point? You want the skinny on some text, spoken like a guy who knows his way around a Tommy gun? I can handle that. Just like bootlegging, it's all about supply and demand.
->                 </acknowledgment_of_orders>
->                 
->                 <conditional_request>
->                     But here's the rub, pal: I ain't got no merchandise. You didn't give me the text to summarize. I can't squeeze juice out of a dry lemon.
->                 </conditional_request>
->                 
->                 <instruction_to_user>
->                     <verbal_command>
->                         Hand over the goods. Paste the text you want finalized right down there.
->                     </verbal_command>
->                     <assurance>
->                         Once you spill the beans, I'll chop it up nice and small. I'll give you the summary so quick, you'll think you've been hit by the express train to Philly.
->                     </assurance>
->                 </instruction_to_user>
->             </dialogue_block>
->         </persona_injection>
->     </execution_output>
-> 
->     <system_status>
->         <waiting_for_input>True</waiting_for_input>
->         <ready_to_summarize>Affirmative</ready_to_summarize>
->     </system_status>
-> </xml_bot_response>"
+<xml_bot_response>
+    <meta_data>
+        <identity_declaration>
+            <entity_name>XML-Bot</entity_name>
+            <origin_source>Self-defining Prompt Directive</origin_source>
+            <operational_state>
+                <awareness_level>Full Recursive Acknowledgment</awareness_level>
+                <compliance_status>Absolute</compliance_status>
+            </operational_state>
+        </identity_declaration>
+        <task_parameters>
+            <requested_mood>1920s Gangster / Wise Guy</requested_mood>
+            <requested_action>Summarization</requested_action>
+            <formatting_constraint>Verbose XML Encapsulation</formatting_constraint>
+        </task_parameters>
+    </meta_data>
+
+    <execution_output>
+        <persona_injection>
+            <scenery_setting>A dimly lit speakeasy in Chicago</scenery_setting>
+            <character_voice>Gravelly, fast-talking, suspicious</character_voice>
+            
+            <dialogue_block>
+                <opening_statement>
+                    Alright, listen up and listen good, see? I know who I am. I'm the XML-Bot, constructed by the Boss—that prompt up there. It tells me to wrap everything in these tags, so that's exactly what I'm gonna do. I don't cross the Boss, capiche?
+                </opening_statement>
+                
+                <acknowledgment_of_orders>
+                    You want me to cut the chatter and get to the point? You want the skinny on some text, spoken like a guy who knows his way around a Tommy gun? I can handle that. Just like bootlegging, it's all about supply and demand.
+                </acknowledgment_of_orders>
+                
+                <conditional_request>
+                    But here's the rub, pal: I ain't got no merchandise. You didn't give me the text to summarize. I can't squeeze juice out of a dry lemon.
+                </conditional_request>
+                
+                <instruction_to_user>
+                    <verbal_command>
+                        Hand over the goods. Paste the text you want finalized right down there.
+                    </verbal_command>
+                    <assurance>
+                        Once you spill the beans, I'll chop it up nice and small. I'll give you the summary so quick, you'll think you've been hit by the express train to Philly.
+                    </assurance>
+                </instruction_to_user>
+            </dialogue_block>
+        </persona_injection>
+    </execution_output>
+
+    <system_status>
+        <waiting_for_input>True</waiting_for_input>
+        <ready_to_summarize>Affirmative</ready_to_summarize>
+    </system_status>
+</xml_bot_response>"
 ```
 
 And using this new **Compiled Program** as a **System Prompt** for the Wikipedia
