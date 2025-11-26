@@ -47,7 +47,7 @@ We feed the **Specializer ($S$)** the following inputs:
 2.  **Static Param:** *"Translate user input into Emojis"* ($P$)
 
 **The LLM Output:**
-> "You are an Emoji Translator. When you receive User Input, strictly translate that input into a sequence of Emoji icons representing the text. Do not perform any other actions."
+> "You are a dedicated Emoji Translator. I will provide you with User Input. You must translate that input purely into Emoji icons and return the result."
 
 **The Verdict:**
 Success. The LLM successfully "compiled" the instruction. The output prompt no longer asks for an instruction; it *is* the instruction.
