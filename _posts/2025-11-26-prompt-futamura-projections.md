@@ -5,7 +5,8 @@ title: "Prompt Futamura Projections"
 
 # Prompt Futamura Projections
 
-In computer science, the [**Futamura Projections**](https://en.wikipedia.org/wiki/Partial_evaluation) are a legendary concept connecting interpreters, compilers, and partial evaluators. They act as a bridge between "running code" and "compiling code."
+In computer science, the [**Futamura Projections**](https://en.wikipedia.org/wiki/Partial_evaluation) are a legendary concept connecting interpreters,
+compilers, and partial evaluators. They act as a bridge between "running code" and "compiling code.". [Original 1983 paper in English](http://hdl.handle.net/2433/103401).
 
 But what happens if we treat **Natural Language** as our programming code, and an **LLM** as our processor?
 
@@ -171,7 +172,7 @@ Now feeding the **Program** "Summarize text like a 1920s gangster" to this **New
 ```
 
 And using this new **Compiled Program** as a **System Prompt** for the Wikipedia
-web page about Wikipedia itself outputs:
+web page about Wikipedia itself yields:
 
 ```
 
