@@ -34,7 +34,7 @@ To analyze our programs mathematically, we can treat our data types as sets and 
 
 When you bundle different pieces of data together, you are multiplying their complexities. In programming, structures like tuples, or dataclasses are known as **product types**.
 
-Mathematically, if you combine Set $A$ and Set $B$ using a cartesian product, the total number of possibilities is $|A| \times |B|$.
+Mathematically, if you combine Set $A$ and Set $B$ using a cartesian product, the total number of possibilities is $\|A\| \times \|B\|$.
 
 Here is how that looks in Python:
 
