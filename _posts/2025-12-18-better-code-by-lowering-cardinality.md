@@ -55,7 +55,7 @@ Because /x/ has 2 possible states and /y/ has 2 possible states, the /Point/ cla
 
 While bundling data multiplies complexity, providing choices or alternatives adds to it. This is known as a **sum type**.
 
-Mathematically, if a value can be from Set $A$ OR Set $B$, the total possibilities are $|A| + |B|$.
+Mathematically, if a value can be from Set $A$ OR Set $B$, the total possibilities are $\|A\| + \|B\|$.
 
 Python expresses sum types in two primary ways:
 
