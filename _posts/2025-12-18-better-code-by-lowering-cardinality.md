@@ -19,10 +19,10 @@ In set theory, the "cardinality" of a set is simply a fancy word for the number 
 
 Let’s look at some basic types to see how this works:
 
-*   **`None` (the unit type):** This has a cardinality of **1**. The only value it can ever hold is `None`.
-*   **`bool`:** This has a cardinality of **2**. It can only be `True` or `False`.
-*   **`uint8` (an 8-bit integer):** This has a cardinality of **256**. It can hold values from 0 up to 255.
-*   **`str`:** For all practical purposes, this has an **infinite** cardinality. The number of possible strings is effectively endless. (Of course, in practice, string size is bound by your system's memory)
+*   **/None/ (the unit type):** This has a cardinality of **1**. The only value it can ever hold is /None/.
+*   **/bool/:** This has a cardinality of **2**. It can only be /True/ or /False/.
+*   **/uint8/ (an 8-bit integer):** This has a cardinality of **256**. It can hold values from 0 up to 255.
+*   **/str/:** For all practical purposes, this has an **infinite** cardinality. The number of possible strings is effectively endless. (Of course, in practice, string size is bound by your system's memory)
 
 ---
 
@@ -49,7 +49,7 @@ class Point:
 # Total Cardinality: 2 * 2 = 4
 ```
 
-Because `x` has 2 possible states and `y` has 2 possible states, the `Point` class has 4 distinct possible states.
+Because /x/ has 2 possible states and /y/ has 2 possible states, the /Point/ class has 4 distinct possible states.
 
 ### Sum Types (Addition)
 
@@ -88,7 +88,7 @@ This is where it gets interesting. Functions are actually **exponential types**.
 
 You can think of a pure function as a lookup table. The inputs ($A$) are the keys, and the outputs ($B$) are the values associated with those keys. How many different tables of this type can you write? $B^A$ tables.
 
-Let’s look at a function signature of `bool -> bool`. Since a boolean has 2 values, the calculation is $2^2 = 4$. This means there are only 4 possible **behaviors** this function can exhibit:
+Let’s look at a function signature of /bool -> bool/. Since a boolean has 2 values, the calculation is $2^2 = 4$. This means there are only 4 possible **behaviors** this function can exhibit:
 
 ```python
 # Implementation 1: Constant True
@@ -110,7 +110,7 @@ def negation(x: bool) -> bool:
 
 Or in table form:
 ```
-# The `always_true` table
+# The /always_true/ table
 +-------+--------+
 | Input | Output |
 +-------+--------+
@@ -118,7 +118,7 @@ Or in table form:
 | False | True   |
 +-------+--------+
 
-# The `always_false` table
+# The /always_false/ table
 +-------+--------+
 | Input | Output |
 +-------+--------+
@@ -126,7 +126,7 @@ Or in table form:
 | False | False  |
 +-------+--------+
 
-# The `identity` table
+# The /identity/ table
 +-------+--------+
 | Input | Output |
 +-------+--------+
@@ -134,7 +134,7 @@ Or in table form:
 | False | False  |
 +-------+--------+
 
-# The `negation` table
+# The /negation/ table
 +-------+--------+
 | Input | Output |
 +-------+--------+
@@ -177,8 +177,8 @@ Mathematically, these are identical. Both have an input cardinality of $3 \times
 
 We can think of a function's complexity as its "Bug Surface Area." High cardinality means there are more mappings between input and output that you need to verify.
 
-*   **Small Surface Area:** A function with the signature `bool -> bool` only has 4 possible pure implementations. You can write 2 tests to cover 100% of the behavior.
-*   **Large Surface Area:** A function with the signature `str -> Shape` has $3^\infty$ possibilities. You have to handle `"CIRCLE"`, `"circle"`, `"  circle  "`, `"apple"`, and everything in between.
+*   **Small Surface Area:** A function with the signature /bool -> bool/ only has 4 possible pure implementations. You can write 2 tests to cover 100% of the behavior.
+*   **Large Surface Area:** A function with the signature /str -> Shape/ has $3^\infty$ possibilities. You have to handle /"CIRCLE"/, /"circle"/, /"  circle  "/, /"apple"/, and everything in between.
 
 **The Strategy:**
 We should use high-cardinality types, like strings or integers, for external data input. However, we should immediately parse that data into low-cardinality types, like Enums or specific structs. This approach is often called **"Parse, don't validate."** By doing this, the core logic of your application only ever has to deal with a small, manageable implementation space.
@@ -203,7 +203,7 @@ class State:
 
 If we treat strings as having $N$ possibilities, the cardinality here is $2 \times (N+1) \times (N+1)$.
 
-The problem is that this structure allows for **impossible states**. For example, `is_loading` could be `True` while `error` is `"Failed"`. Your code will need defensive `if` statements to handle these confusing combinations.
+The problem is that this structure allows for **impossible states**. For example, /is_loading/ could be /True/ while /error/ is /"Failed"/. Your code will need defensive /if/ statements to handle these confusing combinations.
 
 ### The Sum Approach
 
@@ -226,7 +226,7 @@ class Failure:
 State = Loading | Success | Failure
 ```
 
-The mathematical formula changes from multiplication to addition: $1 + N + N$. More importantly, the invalid states have vanished. It is now structurally impossible for the `Loading` state to contain an `error` message.
+The mathematical formula changes from multiplication to addition: $1 + N + N$. More importantly, the invalid states have vanished. It is now structurally impossible for the /Loading/ state to contain an /error/ message.
 
 ---
 
