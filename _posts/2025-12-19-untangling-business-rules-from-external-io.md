@@ -29,7 +29,7 @@ In this approach, we distinguish between **System Crashes** and **Business Decis
 
 ## 2. Modeling Data with Sum Types
 
-We use *dataclasses* and the *|* operator (Union types) to model outcomes. We carefully separate **Infrastructure results** (what the gateway said) from **Logical results** (what that means for our application).
+We use *dataclasses* and the **\|** operator (Union types) to model outcomes. We carefully separate **Infrastructure results** (what the gateway said) from **Logical results** (what that means for our application).
 
 ```python
 from dataclasses import dataclass
