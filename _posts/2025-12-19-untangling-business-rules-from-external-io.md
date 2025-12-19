@@ -43,12 +43,17 @@ class Account:
 
 # --- Infrastructure Variants (The "World" output) ---
 @dataclass(frozen=True)
-class PaymentOK: txn_id: str
+class PaymentOK:
+    txn_id: str
+
 @dataclass(frozen=True)
-class PaymentDenied: reason: str
+class PaymentDenied:
+    reason: str
+
 # Note: Timeout is a recognized state, not an exception
 @dataclass(frozen=True)
-class PaymentTimeout: wait_seconds: int
+class PaymentTimeout:
+    wait_seconds: int
 
 PaymentResult = PaymentOK | PaymentDenied | PaymentTimeout
 
