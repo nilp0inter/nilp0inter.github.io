@@ -261,8 +261,10 @@ def test_api_timeout_logic_mapping():
 
 ## Conclusion
 
-By treating Logic as a **Function** and Results as **Data**, we achieve:
+This approach is about bringing clarity to the boundary where your code meets the real world.
 
-1.  **Operation Ordering:** We explicitly separated the "Impure IO" from the "Atomic Write," ensuring external dependencies don't block internal consistency.
-2.  **Strict Boundaries:** The logic layer decides *what* to do; it never worries about *how* to talk to Stripe or the database.
-3.  **Type-Safe Testing:** We replaced brittle *MagicMocks* with compliant function signatures, ensuring our tests rot-proof and refactor-friendly.
+**When we mix IO errors with logic errors, we force ourselves to hold the entire system's state in our heads just to write a unit test. By untangling them, we break the problem in two: Adapters handle the messy, unpredictable world of HTTP and SQL, while Logic handles the deterministic rules of the business.**
+
+By converting "World Errors" into data, we ensure our business logic remains a clean room of predictable decisions. This doesn't mean we ignore failures; it means we categorize them. We reserve **Exceptions** for truly **irrecoverable errors**—the system crashes, like a full disk or a broken database connection, that should properly bubble up to an error monitoring tool like Sentry. 
+
+By treating business branches as data and system panics as exceptions, we finally return to the original intent of the language: **we only use Exceptions for truly *exceptional* situations.**
