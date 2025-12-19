@@ -320,4 +320,4 @@ Understanding the algebra of data types gives us a powerful framework for correc
 3.  **Prefer sums to products:** Banish invalid states by making them unrepresentable.
 4.  **Refactor algebraically:** Use mathematical isomorphisms to choose the most ergonomic shape for your data.
 
-But overall, minimize the cardinality of your function types to reduce the bug surface area. By doing so, you can write clearer, safer, and more maintainable code.
+But above all, minimize the cardinality of your function types to reduce the bug surface area. By doing so, you can write clearer, safer, and more maintainable code.
