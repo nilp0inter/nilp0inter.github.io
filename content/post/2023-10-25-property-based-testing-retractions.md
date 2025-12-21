@@ -1,9 +1,13 @@
 ---
-layout: default
 title: "Property Based Testing - Retractions and Sections"
+date: 2023-10-25T12:00:00Z
+slug: "property-based-testing-retractions"
+categories: ["software"]
+years: ["2023"]
+draft: false
+math: true
 ---
 
-# Property Based Testing - Retractions and Sections
 
 ## Introduction
 

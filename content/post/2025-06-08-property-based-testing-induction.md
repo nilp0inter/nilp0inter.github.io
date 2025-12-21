@@ -1,8 +1,11 @@
 ---
-layout: default
 title: "Property Based Testing - Induction"
+date: 2025-06-08T12:00:00Z
+slug: "property-based-testing-induction"
+categories: ["software"]
+years: ["2025"]
+draft: false
 ---
-# Property Based Testing - Induction
 ## Introduction
 Property-based testing is a leap forward from traditional example-based tests. With tools like _pytest_ and _hypothesis_, we can verify our code's behavior over a massive, randomized set of inputs. But what if we could go even deeper? What if, instead of just testing outputs, we could test the _rules_ of our algorithm itself?
 

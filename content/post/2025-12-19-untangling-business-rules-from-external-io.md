@@ -1,9 +1,12 @@
 ---
-layout: default
 title: "Untangling Business Rules from External IO: A Practical Python Guide"
+date: 2025-12-19T12:00:00Z
+slug: "untangling-business-rules-from-external-io"
+categories: ["software"]
+years: ["2025"]
+draft: false
 ---
 
-# Untangling Business Rules from External IO: A Practical Python Guide
 
 A common challenge in application development is the entanglement of business rules with external operations (like database writes or API calls). When these mix, testing becomes difficult, and error handling often degrades into a web of *try/except* blocks that hide the actual flow of logic.
 

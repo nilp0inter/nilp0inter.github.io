@@ -1,9 +1,13 @@
 ---
-layout: default
 title: "Prompt Futamura Projections"
+date: 2025-11-26T12:00:00Z
+slug: "prompt-futamura-projections"
+categories: ["software"]
+years: ["2025"]
+draft: false
+math: true
 ---
 
-# Prompt Futamura Projections
 
 In computer science, the [**Futamura Projections**](https://en.wikipedia.org/wiki/Partial_evaluation) are a legendary concept connecting interpreters,
 compilers, and partial evaluators. They act as a bridge between "running code" and "compiling code.". [Original 1983 paper in English](http://hdl.handle.net/2433/103401).

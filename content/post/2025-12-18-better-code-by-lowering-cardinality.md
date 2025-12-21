@@ -1,9 +1,13 @@
 ---
-layout: default
 title: "Improve your Programs by Minimizing Cardinality"
+date: 2025-12-18T12:00:00Z
+slug: "better-code-by-lowering-cardinality"
+categories: ["software"]
+years: ["2025"]
+draft: false
+math: true
 ---
 
-# Improve your Programs by Minimizing Cardinality
 
 Software engineering is often described as a constant struggle against complexity. As our systems grow larger, the number of possible implementations states within the program explodes. This turns our code into a chaotic landscape where bugs can easily hide in the corners we forgot to check. To fight this, we usually rely on external tools like linters, detailed documentation, or exhaustive test suites.
 

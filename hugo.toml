@@ -1,0 +1,48 @@
+baseURL = "https://www.rusoblanco.com/"
+languageCode = "en-us"
+title = "rusoblanco"
+theme = "rusoblanco-hugo-theme"
+
+[params]
+  description = "Roberto Abdelkader Martínez Pérez's blog"
+  author = "Roberto Abdelkader Martínez Pérez"
+  banner_image = "images/rusoblanco2.gif"
+  intro = """
+**Welcome to rusoblanco!**
+
+This is my personal blog where I write about software development, functional programming, and testing.
+"""
+  footer_text = "powered by [Hugo](https://gohugo.io) and [NanoBlogger](https://nanoblogger.sourceforge.net/) theme"
+  contact = "nilp0inter@gmail.com"
+  mainSections = ["post"]
+
+# Enable year-based archives taxonomy
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  year = "years"
+
+# Enable syntax highlighting
+[markup]
+  [markup.highlight]
+    style = "monokailight"
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+# Enable RSS
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML", "RSS"]
+
+# RSS Configuration
+[outputFormats.RSS]
+  mediatype = "application/rss+xml"
+  baseName = "rss"
+
+# Configure permalinks
+[permalinks]
+  post = "/archives/:year/:month/:day/:slug/"
