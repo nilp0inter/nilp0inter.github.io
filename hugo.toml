@@ -13,7 +13,7 @@ theme = "rusoblanco-hugo-theme"
 This is my personal blog where I write about software development, functional programming, and testing.
 """
   footer_text = "powered by [Hugo](https://gohugo.io) and [NanoBlogger](https://nanoblogger.sourceforge.net/) theme"
-  contact = "nilp0inter@gmail.com"
+  contact = "nilp0inter@rusoblanco.com"
   mainSections = ["post"]
 
 # Enable year-based archives taxonomy

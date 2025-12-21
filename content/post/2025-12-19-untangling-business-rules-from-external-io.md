@@ -5,6 +5,7 @@ slug: "untangling-business-rules-from-external-io"
 categories: ["software"]
 years: ["2025"]
 draft: false
+math: true
 ---
 
 
