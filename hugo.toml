@@ -26,8 +26,7 @@ This is my personal blog where I write about software development, functional pr
 [markup]
   [markup.highlight]
     style = "monokailight"
-    lineNos = true
-    lineNumbersInTable = true
+    lineNos = false
     noClasses = true
   [markup.goldmark]
     [markup.goldmark.renderer]
