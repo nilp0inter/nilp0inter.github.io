@@ -7,11 +7,6 @@ theme = "rusoblanco-hugo-theme"
   description = "Roberto Abdelkader Martínez Pérez's blog"
   author = "Roberto Abdelkader Martínez Pérez"
   banner_image = "images/rusoblanco2.gif"
-  intro = """
-**Welcome to rusoblanco!**
-
-This is my personal blog where I write about software development, functional programming, and testing.
-"""
   footer_text = "powered by [Hugo](https://gohugo.io) and [NanoBlogger](https://nanoblogger.sourceforge.net/) theme"
   contact = "nil@rusoblanco.com"
   mainSections = ["post"]
