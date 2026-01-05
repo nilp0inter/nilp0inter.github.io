@@ -15,6 +15,8 @@ However, there is a deeper principle we can use that is built right into the cod
 
 Regardless of the language you are using, whether it is Python, Rust, or Typescript, thinking in terms of Algebraic Data Types (ADTs) allows us to measure and tame this chaos. The key insight is simple but powerful: **To build better programs, we should design functions whose type has the smallest cardinality possible.**
 
+<!--more-->
+
 ---
 
 ## 1. What Is Cardinality?

@@ -12,6 +12,8 @@ Property-based testing is a leap forward from traditional example-based tests. W
 
 This is where a classic proof technique from mathematics, **mathematical induction**, provides an incredibly powerful mental model. By structuring our property-based tests to mirror induction, we can achieve a more profound level of confidence, verifying that the structural integrity of our code holds, no matter how large the input grows.
 
+<!--more-->
+
 ## The Theory: Mathematical Induction
 Before we dive into code, let's understand the core concept in its formal terms. In mathematics, **proof by induction** is a formal proof technique used to establish that a given statement P(n) is true for all natural numbers n (or all numbers from a certain starting point). A proof by induction consists of two distinct steps:
 

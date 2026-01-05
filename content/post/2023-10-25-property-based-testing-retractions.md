@@ -22,6 +22,7 @@ In this article I will explain a very common software construction that
 can be very nicely tested using property based testing. This construction
 is called a retraction section pair in mathematics.
 
+<!--more-->
 
 Instead of jumping straight into the examples, let me first give you the
 abstract definition of a retraction section pair. This will help you

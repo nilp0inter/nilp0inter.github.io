@@ -16,6 +16,8 @@ But what happens if we treat **Natural Language** as our programming code, and a
 
 Can we "compile" an English instruction? Can we build a "Compiler Generator" out of pure prose?
 
+<!--more-->
+
 I decided to test the three Futamura Projections using LLMs (specifically Gemini 3 and Claude 4.5 Opus). The goal isn't to write Python or C code, but to use English as the **Domain Specific Language (DSL)**, exploring how prompts can recursively optimize themselves.
 
 ## The Primitives: Setting the Stage

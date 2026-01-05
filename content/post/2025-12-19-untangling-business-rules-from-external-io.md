@@ -13,6 +13,8 @@ A common challenge in application development is the entanglement of business ru
 
 This post explores a practical pattern to solve these specific problems. By treating program outcomes as data rather than exceptions, and by isolating external side effects from core logic, we can create code that is easier to read, safer to refactor, and simpler to test.
 
+<!--more-->
+
 ---
 
 ## 1. The Philosophy: Exceptions vs. Variants
