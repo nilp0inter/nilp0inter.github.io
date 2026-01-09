@@ -4,7 +4,7 @@ date: 2026-01-08T12:00:00Z
 slug: "pace-planning-fragile-backups"
 categories: ["software", "resilience"]
 years: ["2026"]
-draft: true
+draft: false
 math: false
 ---
 
