@@ -42,9 +42,8 @@ diagram:
 
 $$
   id_A
-    \;\colon\; 
+    \colon
   A \overset{section}{\underset{i}{\to}} B \overset{retraction}{\underset{r}{\to}} A
-  \,.
 $$
 
 In plain English this means that the section function $i$ knows how to
@@ -64,7 +63,7 @@ The revised diagram looks like this:
 
 $$
   id_{source}
-    \;\colon\; 
+    \colon 
   {source\ set} \overset{section}{\to} {target\ set} \overset{retraction}{\to} {source\ set}
 $$
 
@@ -411,14 +410,13 @@ def test_gzip_compress_gzip_decompress(data):
 # Composing Retraction Section Pairs
 
 Retraction section pairs compose very nicely. If we have two retraction
-section pairs of the following form $A \overset{section}{\underset{i}{\to}} B \overset{retraction}{\underset{r}{\to}} A \,$ and $B \overset{section}{\underset{j}{\to}} C \overset{retraction}{\underset{s}{\to}} B \,$
+section pairs of the following form $A \overset{section}{\underset{i}{\to}} B \overset{retraction}{\underset{r}{\to}} A$, and $B \overset{section}{\underset{j}{\to}} C \overset{retraction}{\underset{s}{\to}} B$,
 
 Then we can compose the two retraction section pairs to get a new retraction
 section pair.
 
 $$
   A \overset{section}{\underset{i \circ j}{\to}} C \overset{retraction}{\underset{r \circ s}{\to}} A
-  \,.
 $$
 
 In other words, if we have two retraction section pairs with compatible types,

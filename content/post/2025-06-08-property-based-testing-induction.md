@@ -17,9 +17,9 @@ This is where a classic proof technique from mathematics, **mathematical inducti
 ## The Theory: Mathematical Induction
 Before we dive into code, let's understand the core concept in its formal terms. In mathematics, **proof by induction** is a formal proof technique used to establish that a given statement P(n) is true for all natural numbers n (or all numbers from a certain starting point). A proof by induction consists of two distinct steps:
 
-1.  **The Base Case (or Basis):** We prove that the statement holds for the first or simplest case, typically n=0 or n=1. This establishes a foundation for the proof, written as proving P(0).
+1.  **The Base Case (or Basis):** We prove that the statement holds for the first or simplest case, typically $n=0$ or $n=1$. This establishes a foundation for the proof, written as proving $P(0)$.
     
-2.  **The Inductive Step:** We prove that **if** the statement holds for some arbitrary case n=k, **then** it must also hold for the next case, n=k+1. The assumption that P(k) is true is called the **Inductive Hypothesis**. This step is written as proving that for all k, the implication P(k) \implies P(k+1) is true.
+2.  **The Inductive Step:** We prove that **if** the statement holds for some arbitrary case $n=k$, **then** it must also hold for the next case, $n=k+1$. The assumption that $P(k)$ is true is called the **Inductive Hypothesis**. This step is written as proving that for all $k$, the implication $P(k) \implies P(k+1)$ is true.
     
 
 This two-step process can seem abstract, but it has a simple, intuitive parallel: a line of falling dominoes. The **base case** is proving you can knock over the _first_ domino. The **inductive step** is proving that if _any_ given domino falls, it has enough momentum to knock over the _next_ one in line. If both of these conditions are true, you can conclude with certainty that all the dominoes will fall, no matter how long the line is.
@@ -38,7 +38,7 @@ Let's see this in action with common Python built-in functions, ordered from sim
 
 * * *
 ### Example 1: _sum()_
-This is the canonical example. Its inductive property is simple and clear: the sum of a list is the sum of its first _n-1_ elements plus the last element.
+This is the canonical example. Its inductive property is simple and clear: the sum of a list is the sum of its first $n-1$ elements plus the last element.
 
 ```python
 # The function we are testing
@@ -74,7 +74,7 @@ def test_sum_inductive_step(lst, elem):
 
 * * *
 ### Example 2: _pow(x, y)_
-Exponentiation is another classic recursive function: for a positive integer exponent _y_, we can define x^y as x \times x^{y-1}.
+Exponentiation is another classic recursive function: for a positive integer exponent $y$, we can define $x^y$ as $x \times x^{y-1}$.
 
 ```python
 # The function we are testing
@@ -109,7 +109,7 @@ def test_pow_inductive_step(x, y):
 
 * * *
 ### Example 3: _str.join()_
-This example moves from pure arithmetic to string manipulation. Joining a list of strings has a perfect inductive structure. The result of joining _n_ strings is the result of joining _n-1_ strings, followed by the separator and the _n_-th string.
+This example moves from pure arithmetic to string manipulation. Joining a list of strings has a perfect inductive structure. The result of joining $n$ strings is the result of joining $n-1$ strings, followed by the separator and the $n$-th string.
 
 #### Base Case
 The simplest cases are joining an empty list or a single-element list.
@@ -233,15 +233,15 @@ Let's explicitly map the formal concepts of induction to the tests we just wrote
 
 | Mathematical Concept | How It Appears in Our Tests |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Base Case** | The _test___base_case()_ functions. They test the simplest meaningful input (P(0)), establishing a "ground truth" to build upon. |
-| **Inductive Hypothesis** | The _assumption_ that the function works for a smaller input (P(k)). In _test_sum_inductive_step_, the call _sum(lst)_ embodies this. |
-| **Inductive Step** | The _assert_ statement in the _test___inductive_step()_ function. It verifies that the structural rule (P(k) \implies P(k+1)) holds. |
+| **Base Case** | The _test___base_case()_ functions. They test the simplest meaningful input ($P(0)$), establishing a "ground truth" to build upon. |
+| **Inductive Hypothesis** | The _assumption_ that the function works for a smaller input ($P(k)$). In _test_sum_inductive_step_, the call _sum(lst)_ embodies this. |
+| **Inductive Step** | The _assert_ statement in the _test___inductive_step()_ function. It verifies that the structural rule ($P(k) \implies P(k+1)$) holds. |
 
 The most profound shift here is moving from testing _outputs_ to testing _relationships_. A traditional test asserts _factorial(5) == 120_. An inductive test asserts _factorial(5) == 5 * factorial(4)_, which is a far more powerful statement about the function's internal logic. It verifies the algorithm itself.
 
 Let's summarize how this pattern applies to each function we've tested:
 
-| Function Tested | Base Case (P(0)) | Inductive Step (P(k) \implies P(k+1)) |
+| Function Tested | Base Case ($P(0)$) | Inductive Step ($P(k) \implies P(k+1)$) |
 | ------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `sum()` | The sum of an empty list is 0. | `sum(list + [item]) == sum(list) + item`. |
 | `pow(x, y)` | A number to the power of 0 is 1. | `pow(x, y) == x * pow(x, y-1)`. |

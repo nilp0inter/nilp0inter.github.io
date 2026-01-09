@@ -40,7 +40,7 @@ To analyze our programs mathematically, we can treat our data types as sets and 
 
 When you bundle different pieces of data together, you are multiplying their complexities. In programming, structures like tuples, or dataclasses are known as **product types**.
 
-Mathematically, if you combine Set $A$ and Set $B$ using a cartesian product, the total number of possibilities is $\|A\| \times \|B\|$.
+Mathematically, if you combine Set $A$ and Set $B$ using a cartesian product, the total number of possibilities is $|A| \times |B|$.
 
 Here is how that looks in Python:
 
@@ -61,7 +61,7 @@ Because /x/ has 2 possible states and /y/ has 2 possible states, the /Point/ cla
 
 While bundling data multiplies complexity, providing choices or alternatives adds to it. This is known as a **sum type**.
 
-Mathematically, if a value can be from Set $A$ OR Set $B$, the total possibilities are $\|A\| + \|B\|$.
+Mathematically, if a value can be from Set $A$ OR Set $B$, the total possibilities are $|A| + |B|$.
 
 Python expresses sum types in two primary ways:
 
