@@ -10,6 +10,7 @@ theme = "rusoblanco-hugo-theme"
   footer_text = "powered by [Hugo](https://gohugo.io) and [NanoBlogger](https://nanoblogger.sourceforge.net/) theme"
   contact = "nil@rusoblanco.com"
   mainSections = ["post"]
+  banner_description = "rusoblanco"
 
 # Enable year-based archives taxonomy
 [taxonomies]
