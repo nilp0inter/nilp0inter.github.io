@@ -4,7 +4,7 @@ title = "rusoblanco"
 theme = "rusoblanco-hugo-theme"
 
 [params]
-  description = "Roberto Abdelkader Martínez Pérez's blog"
+  description = "Technically Amused. Roberto Abdelkader Martínez Pérez's blog on the elegant, the complex, and the curious in software engineering."
   author = "Roberto Abdelkader Martínez Pérez"
   banner_image = "images/rusoblanco2.gif"
   footer_text = "powered by [Hugo](https://gohugo.io) and [NanoBlogger](https://nanoblogger.sourceforge.net/) theme"
