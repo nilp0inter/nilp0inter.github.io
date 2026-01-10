@@ -66,6 +66,8 @@ Remember to update the `title` and set `draft = false` when you are ready to pub
 
 ### Commit and Synchronization Process
 
+IMPORTANT: Never commit or prepare a commit unless the user explicitly asks for it! This is a strict rule, do not break it.
+
 A strict process must be followed to keep the blog and theme synchronized.
 
 1.  **Make changes:** Modify the theme or create new content.
