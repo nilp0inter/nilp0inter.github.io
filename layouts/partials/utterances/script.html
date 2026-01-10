@@ -1,0 +1,17 @@
+<script>
+  (function() {
+    const storedTheme = localStorage.getItem('theme');
+    const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const theme = storedTheme || preferredTheme;
+    const utterancesTheme = theme === 'dark' ? 'github-dark' : 'github-light';
+    
+    const script = document.createElement('script');
+    script.src = 'https://utteranc.es/client.js';
+    script.setAttribute('repo', '{{ .Site.Params.utterances.repo }}');
+    script.setAttribute('issue-term', '{{ .Site.Params.utterances.issue_term }}');
+    script.setAttribute('theme', utterancesTheme);
+    script.setAttribute('crossorigin', 'anonymous');
+    script.setAttribute('async', '');
+    document.currentScript.parentElement.appendChild(script);
+  })();
+</script>

@@ -49,4 +49,4 @@ theme = "rusoblanco-hugo-theme"
 [params.utterances]
   repo = "nilp0inter/nilp0inter.github.io"
   issue_term = "pathname"
-  theme = "github-light"
+  theme = "preferred-color-scheme"
