@@ -60,6 +60,7 @@ Remember to update the `title` and set `draft = false` when you are ready to pub
 ### Theme Modifications
 
 *   The theme is a separate Git repository managed as a submodule.
+*   **This theme is owned and actively developed as part of this project. Direct modifications to the theme are encouraged when necessary.**
 *   **All changes to the theme must be committed within the `themes/rusoblanco-hugo-theme/` directory.**
 *   Before making any changes, ensure both the main blog repository and the theme submodule repository are on the `main` branch.
 
