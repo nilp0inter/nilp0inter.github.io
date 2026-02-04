@@ -6,7 +6,7 @@ title = 'Your Code Is Not You: What a Music Producer Taught Me About Programming
 
 I have a mixed background. For the past 20 years, I've worked as a professional programmer, but I started my career as a sound technician. Because of that experience, I still follow trends in the audio world. I watch production tutorials and read about mixing techniques. 
 
-Recently, I saw a video by Gregory Scott from Kush Audio titled “Is 'Self Expression' Limiting Your Art?” He mainly spoke to musicians, but I realized he was describing the same emotional trap I've faced in software development for two decades.
+Recently, I saw a video by Gregory Scott from Kush Audio titled [“Is 'Self Expression' Limiting Your Art?”](https://www.youtube.com/watch?v=oHcjh5oWPeA) He mainly spoke to musicians, but I realized he was describing the same emotional trap I've faced in software development for two decades.
 
 <!--more-->
 
