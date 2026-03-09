@@ -7,246 +7,205 @@ years: ["2026"]
 ---
 
 
-The terms *pure*, *deterministic*, and *idempotent* get thrown around in technical conversations as if they were synonyms. They are not. Each one describes a different property of a function's behavior, and confusing them leads to sloppy reasoning about code. A function can be deterministic but impure. It can be idempotent without being deterministic. And purity, far from being just another property in the list, is actually the strongest of the three — it implies the other two.
-
-This post breaks down these three properties, shows how they relate, and provides concrete Python examples so you can build a clear mental model.
+The terms *pure*, *deterministic*, and *idempotent* are not synonyms. Each describes a different property of a function, and confusing them leads to sloppy reasoning about code. This post breaks down all three with concrete Python examples.
 
 <!--more-->
 
 ---
 
-## 1. The Three Properties
+## 1. Two Kinds of Idempotency
 
-Let's start with clean definitions before we mix them together.
+The word "idempotent" has two distinct formal meanings, and conflating them is the root of many misunderstandings.
 
-### Purity
+**Value-idempotent (mathematical):** `f(f(x)) = f(x)`. Applying the function to its own output gives the same result. These are *projections* — they collapse their input into a canonical form, and applying them again changes nothing. Examples: `abs`, `upper`, `clamp`. Counter-examples: `add`, `negate`, `increment`.
 
-A **pure function** has two constraints:
+**Effect-idempotent (imperative):** Calling a function multiple times has the same effect on system state as calling it once. This is what matters for retries, APIs, and distributed systems. Examples: HTTP `PUT`, HTTP `DELETE`, upserting a database row.
 
-1.  Its output depends *only* on its input arguments.
-2.  It produces *no side effects* — no writes to disk, no mutations of external state, no network calls.
-
-Purity is about isolation. A pure function is a hermetically sealed box: data goes in, data comes out, and nothing else in the universe changes.
-
-```python
-# Pure: output depends only on input, no side effects.
-def add(a: int, b: int) -> int:
-    return a + b
-```
-
-An **impure function** violates at least one of those constraints. It might read hidden state, mutate a global variable, write to a log, or send a network request.
-
-```python
-# Impure: mutates external state (the list).
-def append_and_count(item: str, log: list[str]) -> int:
-    log.append(item)
-    return len(log)
-```
-
-### Determinism
-
-A **deterministic function** always returns the same output for the same input. The key word is *always* — across calls, across time, across machines.
-
-```python
-# Deterministic: "hello" always uppercases to "HELLO".
-def shout(text: str) -> str:
-    return text.upper()
-```
-
-A **nondeterministic function** can produce different outputs even when called with the same arguments, because it depends on some hidden state: the clock, a random seed, a database row, a file on disk.
-
-```python
-import random
-
-# Nondeterministic: same input, different output every time.
-def roll_dice(sides: int) -> int:
-    return random.randint(1, sides)
-```
-
-### Idempotency
-
-An **idempotent function** can be called multiple times with the same arguments and, after the first call, nothing changes. The second call has the same effect as the first. The tenth call has the same effect as the first. Formally: there are no *changes of state* between subsequent identical calls.
-
-This is **not** the same as determinism. A function can return different values on repeated calls and still be idempotent, as long as the *state of the world* doesn't keep changing.
-
-```python
-import os
-
-# Idempotent: calling it twice doesn't create the directory twice.
-def ensure_directory(path: str) -> None:
-    os.makedirs(path, exist_ok=True)
-```
+The unifying intuition: **doing it twice is the same as doing it once** — applied either to *values* or to *effects*.
 
 ---
 
-## 2. How They Combine
+## 2. The Three Properties
 
-These three properties are not independent. Purity is the strongest: a pure function is always deterministic (same input, same output) and always idempotent (no state to change between calls). But the reverse is not true — a function can be deterministic without being pure, and idempotent without being either. Let's see each combination in practice.
+**Determinism.** A deterministic function always returns the same output for the same input — across calls, across time, across machines. Nondeterminism creeps in whenever a function consumes a **hidden input** not in the argument list:
 
-### Pure (The Gold Standard)
+- **Hidden state** — a database row, the system clock, an environment variable, a global counter. The value can change between calls, so the output changes too.
+- **Pseudo-random number generators (PRNGs)** — deterministic algorithms that become nondeterministic because they are typically seeded by a hidden input.
+- **True random number generators (TRNGs)** — hardware or quantum RNGs are nondeterministic *by nature*. There is no hidden input to expose; the output is genuinely unpredictable.
+- **Concurrency** — when threads share mutable state, the OS scheduler's timing becomes an implicit input. Two runs of the same code can interleave differently, producing different results.
 
-This is the function you want to write whenever possible. Same input, same output, no side effects. Purity automatically gives you determinism and idempotency for free.
+**Purity.** A pure function has two constraints: (1) its output depends *only* on its input arguments, and (2) it produces *no side effects* — no writes to disk, no mutations of external state, no network calls. An impure function violates at least one of those constraints.
 
-```python
-def clamp(value: float, lo: float, hi: float) -> float:
-    """Constrain a value to a range. Pure."""
-    return max(lo, min(hi, value))
+**Idempotency.** As defined in Section 1 — either value-idempotent (`f(f(x)) = f(x)`) or effect-idempotent (repeated calls leave state unchanged after the first).
 
-# Call it a thousand times, nothing changes anywhere.
-assert clamp(15.0, 0.0, 10.0) == 10.0
-assert clamp(15.0, 0.0, 10.0) == 10.0
-```
-
-### Impure + Deterministic (Predictable Side Effects)
-
-The output is predictable from the input, but the function also does something to the outside world. This is **not** necessarily idempotent — the side effect might accumulate.
-
-```python
-def log_and_upper(text: str) -> str:
-    """Deterministic output, but impure: writes to stdout."""
-    result = text.upper()
-    print(f"Converted: {result}")  # Side effect!
-    return result
-
-# Same output every time, but each call prints a new line.
-assert log_and_upper("hello") == "HELLO"
-assert log_and_upper("hello") == "HELLO"
-```
-
-Each call produces a new line of output. The return value is deterministic, but the side effect accumulates. This function is *not* idempotent.
-
-### Impure + Nondeterministic (The Wild West)
-
-Once a function is impure, it can also be nondeterministic — its output depends on hidden state like the clock, a random seed, or a database row.
-
-```python
-from datetime import datetime
-
-def greeting(name: str) -> str:
-    """Impure and nondeterministic: reads hidden state (the clock)."""
-    hour = datetime.now().hour  # Hidden input: the clock.
-    if hour < 12:
-        return f"Good morning, {name}"
-    return f"Good afternoon, {name}"
-
-# Same input, but the output depends on when you call it.
-```
-
-Reading the clock is a form of impurity — the function's output depends on something other than its explicit arguments. It gets worse when you add *output* side effects on top:
-
-```python
-import random
-
-_audit_log: list[str] = []
-
-def generate_token(user_id: str) -> str:
-    """Nondeterministic and impure: reads randomness, writes to a log."""
-    token = f"{user_id}-{random.randint(1000, 9999)}"
-    _audit_log.append(f"Generated token for {user_id}")
-    return token
-```
-
-Every call produces a different token (nondeterministic) and appends to a global list (side effect). Testing this function requires controlling the random seed *and* inspecting the global state.
+**All pure functions are deterministic. All pure functions are trivially effect-idempotent (no effects to repeat). But pure functions are NOT automatically value-idempotent.**
 
 ---
 
-## 3. Idempotency Is Its Own Thing
+## 3. How They Combine
 
-The examples above covered purity and determinism. Idempotency cuts across both of them in a way that often surprises people.
+Purity is the strongest property: it implies determinism and trivial effect-idempotency. But the reverse does not hold. Let's walk through each combination.
 
-### Idempotent but Not Deterministic
+### Pure, Deterministic, Value-Idempotent
 
-This is the classic case that confuses most developers. Consider an HTTP `DELETE` request:
+```python
+def normalize_email(email: str) -> str:
+    """Strip whitespace and lowercase. f(f(x)) = f(x)."""
+    return email.strip().lower()
+
+assert normalize_email("  Alice@Example.COM  ") == "alice@example.com"
+assert normalize_email(normalize_email("  Alice@Example.COM  ")) == "alice@example.com"
+```
+
+### Pure, Deterministic, NOT Value-Idempotent
+
+```python
+from urllib.parse import quote
+
+def url_encode(text: str) -> str:
+    """Percent-encode a string for URLs."""
+    return quote(text, safe="")
+
+assert url_encode("hello world") == "hello%20world"
+assert url_encode(url_encode("hello world")) == "hello%2520world"  # Double-encoded!
+```
+
+Double-encoding (`%20` → `%2520`) is a real and common bug — pure and deterministic, but not value-idempotent.
+
+### Impure, Deterministic, Effect-Idempotent
+
+Like HTTP `PUT` — writing the same value again leaves the system unchanged.
+
+```python
+config_store: dict[str, str] = {}
+
+def upsert_config(key: str, value: str) -> str:
+    config_store[key] = value
+    return f"OK: {key}={value}"
+
+assert upsert_config("timeout", "30") == "OK: timeout=30"
+assert upsert_config("timeout", "30") == "OK: timeout=30"
+
+# State after one call or ten calls is identical:
+assert config_store == {"timeout": "30"}
+```
+
+### Impure, Deterministic, NOT Effect-Idempotent
+
+```python
+audit_log: list[str] = []
+
+def append_to_audit_log(event: str) -> str:
+    audit_log.append(event)
+    return f"logged: {event}"
+
+assert append_to_audit_log("user_login") == "logged: user_login"
+assert append_to_audit_log("user_login") == "logged: user_login"
+
+# Same return value, but the side effect accumulated:
+assert len(audit_log) == 2  # Not effect-idempotent!
+```
+
+Every call adds another entry — a retry produces a duplicate log line.
+
+### Impure, Nondeterministic, Effect-Idempotent
+
+This is the classic case that confuses most developers.
 
 ```python
 database: dict[str, str] = {"item_1": "Apple", "item_2": "Banana"}
 
 def delete_item(item_id: str) -> int:
-    """Idempotent: repeated calls don't change state after the first.
-    Not deterministic: return value changes between calls."""
     if item_id in database:
         del database[item_id]
         return 200  # OK
     return 404  # Not Found
 
-# First call: deletes the item, returns 200.
-assert delete_item("item_1") == 200
-
-# Second call: item is already gone, returns 404.
-assert delete_item("item_1") == 404
+assert delete_item("item_1") == 200   # First call: deletes the item
+assert delete_item("item_1") == 404   # Second call: item already gone
 
 # But the state of the database is the same after both calls!
-# That's idempotency: no state change after the first invocation.
 ```
 
-The *return value* changed (200 → 404), but the *state of the system* did not change after the first call. That is what idempotency means. It is about the **effect**, not the **output**.
+The *return value* changed (200 → 404), but the *state of the system* did not. Effect-idempotency is about the **effect**, not the **output**.
 
-### Deterministic but Not Idempotent
-
-A function can be perfectly predictable and still not idempotent if its side effects accumulate.
+### Impure, Nondeterministic, NOT Effect-Idempotent
 
 ```python
-counter: list[int] = []
+_next_id = 0
 
-def record_event(event_id: int) -> int:
-    """Deterministic output, but not idempotent: state keeps changing."""
-    counter.append(event_id)
-    return event_id
+def create_user(email: str) -> dict:
+    global _next_id
+    _next_id += 1
+    user = {"id": _next_id, "email": email}
+    # Imagine: database.insert(user)
+    return user
 
-# The return value is always the same...
-assert record_event(42) == 42
-assert record_event(42) == 42
+first  = create_user("alice@example.com")  # {"id": 1, ...}
+second = create_user("alice@example.com")  # {"id": 2, ...}
 
-# ...but the state keeps growing:
-assert len(counter) == 2  # Not idempotent!
+assert first["id"] != second["id"]  # Different output (nondeterministic)
+# And two rows now exist in the "database" (not effect-idempotent)
 ```
+
+A network retry creates a duplicate user — this is why payment APIs require idempotency keys:
+
+```python
+seen_requests: dict[str, dict] = {}
+
+def create_user_idempotent(email: str, idempotency_key: str) -> dict:
+    if idempotency_key in seen_requests:
+        return seen_requests[idempotency_key]
+
+    user = {"id": generate_id(), "email": email}
+    # database.insert(user)
+    seen_requests[idempotency_key] = user
+    return user
+```
+
+The first call creates the resource and caches the result; subsequent calls with the same key return the cached result and skip the write.
 
 ---
 
 ## 4. The Decision Tree
 
-Three yes-or-no questions classify any function:
-
 ```mermaid
 flowchart TD
     A(["f(x)"]) --> B{"Has effects?"}
-    B -- No --> D["Pure · Deterministic · Idempotent"]
+    B -- No --> V{"f(f(x)) = f(x)?"}
+    V -- Yes --> D1["Pure · Deterministic · Value-idempotent"]
+    V -- No --> D2["Pure · Deterministic · Not value-idempotent"]
     B -- Yes --> F{"Same input →\nsame output?"}
     F -- Yes --> I1{"Same effect on\nrepeated calls?"}
     F -- No --> I2{"Same effect on\nrepeated calls?"}
-    I1 -- Yes --> G1["Impure · Deterministic · Idempotent"]
-    I1 -- No --> G2["Impure · Deterministic · Not idempotent"]
-    I2 -- Yes --> H1["Impure · Nondeterministic · Idempotent"]
-    I2 -- No --> H2["Impure · Nondeterministic · Not idempotent"]
+    I1 -- Yes --> G1["Impure · Deterministic · Effect-idempotent"]
+    I1 -- No --> G2["Impure · Deterministic · Not effect-idempotent"]
+    I2 -- Yes --> H1["Impure · Nondeterministic · Effect-idempotent"]
+    I2 -- No --> H2["Impure · Nondeterministic · Not effect-idempotent"]
 ```
-
-| Question | Yes | No |
-|----------|-----|-----|
-| Has effects? | Impure | Pure |
-| Same input, same output? | Deterministic | Nondeterministic |
-| Same effect on repeated calls? | Idempotent | Not idempotent |
-
 
 ---
 
 ## 5. Why This Matters
 
-These distinctions are not academic. They have direct, practical consequences:
+These distinctions have direct, practical consequences:
 
-**Pure functions** are trivially testable. No setup, no teardown, no mocks. If your business logic lives in pure functions, you can test it exhaustively with simple assertions.
+**Pure functions** are trivially testable (no mocks, no setup) and safely memoizable (`@functools.lru_cache`). Keep functions pure whenever possible.
 
-**Idempotency** is a design requirement for any operation that might be retried — HTTP handlers, message queue consumers, database migrations. If your `create_user` endpoint isn't idempotent, a network retry will create a duplicate user.
+**Effect-idempotency** is a design requirement for any operation that might be retried — HTTP handlers, message queue consumers, database migrations.
 
-**Impurity** is not evil, but it should be *contained*. Push side effects to the edges of your system. Let the core logic be pure, and let thin adapter layers handle the messy, impure, nondeterministic real world.
+**Value-idempotency** matters for normalization and canonicalization. Value-idempotent functions can safely be applied "just in case" without worrying about double-processing.
+
+**Read-only operations** are impure and nondeterministic, yet effect-idempotent — reading changes nothing. In HTTP/REST this category is called **safe**; safe operations can always be retried without risk.
+
+**Impurity** is not evil, but it should be *contained*. Push side effects to the edges of your system.
 
 ---
 
 ## Conclusion
 
-Three properties, three questions about any function:
+Three properties, three questions:
 
-1.  **Has effects?** If no, the function is *pure* — and automatically deterministic and idempotent. If yes, it is *impure*, and you need to ask the next two questions.
-2.  **Same input, same output?** Yes means *deterministic*, no means *nondeterministic*.
-3.  **Same effect on repeated calls?** Yes means *idempotent*, no means *not idempotent*.
-
-Purity is the strongest guarantee — it implies the other two. But once a function is impure, determinism and idempotency become separate concerns you need to reason about explicitly. When you are clear about which properties your function has — and which it lacks — you can make better decisions about where to place it in your architecture, how to test it, and how much you can trust it under retry and concurrency.
+1.  **Has effects?** No → *pure* (and automatically deterministic, trivially effect-idempotent). But check value-idempotency.
+2.  **Same input, same output?** Yes → *deterministic*. No → *nondeterministic*.
+3.  **Same effect on repeated calls?** Yes → *effect-idempotent*. No → not.
