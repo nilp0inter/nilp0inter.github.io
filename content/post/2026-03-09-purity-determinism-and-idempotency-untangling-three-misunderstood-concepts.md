@@ -17,7 +17,7 @@ The terms *pure*, *deterministic*, and *idempotent* are not synonyms. Each descr
 
 The word "idempotent" has two distinct formal meanings, and conflating them is the root of many misunderstandings.
 
-**Value-idempotent (mathematical):** `f(f(x)) = f(x)`. Applying the function to its own output gives the same result. These are *projections* — they collapse their input into a canonical form, and applying them again changes nothing. Examples: `abs`, `upper`, `clamp`. Counter-examples: `add`, `negate`, `increment`.
+**Value-idempotent (mathematical):** `f(f(x)) = f(x)`. Applying the function to its own output gives the same result. For this to be well-defined, the function's input and output types must be exactly the same (an *endomorphism*, `a -> a`). These are *projections* — they collapse their input into a canonical form, and applying them again changes nothing. Examples: `abs`, `upper`, `clamp`. Counter-examples: `negate`, `increment`.
 
 **Effect-idempotent (imperative):** Calling a function multiple times has the same effect on system state as calling it once. This is what matters for retries, APIs, and distributed systems. Examples: HTTP `PUT`, HTTP `DELETE`, upserting a database row.
 
@@ -34,7 +34,7 @@ The unifying intuition: **doing it twice is the same as doing it once** — appl
 - **True random number generators (TRNGs)** — hardware or quantum RNGs are nondeterministic *by nature*. There is no hidden input to expose; the output is genuinely unpredictable.
 - **Concurrency** — when threads share mutable state, the OS scheduler's timing becomes an implicit input. Two runs of the same code can interleave differently, producing different results.
 
-**Purity.** A pure function has two constraints: (1) its output depends *only* on its input arguments, and (2) it produces *no side effects* — no writes to disk, no mutations of external state, no network calls. An impure function violates at least one of those constraints.
+**Purity.** A pure function has two constraints: (1) its output depends *only* on its input arguments (which implies it is deterministic), and (2) it produces *no side effects* — no writes to disk, no mutations of external state, no network calls. Pure functions are *referentially transparent*, meaning a function call can be replaced with its return value without changing the program's behavior. An impure function violates at least one of those constraints.
 
 **Idempotency.** As defined in Section 1 — either value-idempotent (`f(f(x)) = f(x)`) or effect-idempotent (repeated calls leave state unchanged after the first).
 
@@ -46,7 +46,7 @@ The unifying intuition: **doing it twice is the same as doing it once** — appl
 
 Purity is the strongest property: it implies determinism and trivial effect-idempotency. But the reverse does not hold. Let's walk through each combination.
 
-### Pure, Deterministic, Value-Idempotent
+### Pure, Value-Idempotent
 
 ```python
 def normalize_email(email: str) -> str:
@@ -57,7 +57,7 @@ assert normalize_email("  Alice@Example.COM  ") == "alice@example.com"
 assert normalize_email(normalize_email("  Alice@Example.COM  ")) == "alice@example.com"
 ```
 
-### Pure, Deterministic, NOT Value-Idempotent
+### Pure, NOT Value-Idempotent
 
 ```python
 from urllib.parse import quote
@@ -70,7 +70,7 @@ assert url_encode("hello world") == "hello%20world"
 assert url_encode(url_encode("hello world")) == "hello%2520world"  # Double-encoded!
 ```
 
-Double-encoding (`%20` → `%2520`) is a real and common bug — pure and deterministic, but not value-idempotent.
+Double-encoding (`%20` → `%2520`) is a real and common bug — pure, but not value-idempotent.
 
 ### Impure, Deterministic, Effect-Idempotent
 
@@ -171,11 +171,11 @@ The first call creates the resource and caches the result; subsequent calls with
 
 ```mermaid
 flowchart TD
-    A(["f(x)"]) --> B{"Has effects?"}
-    B -- No --> V{"f(f(x)) = f(x)?"}
-    V -- Yes --> D1["Pure · Deterministic · Value-idempotent"]
-    V -- No --> D2["Pure · Deterministic · Not value-idempotent"]
-    B -- Yes --> F{"Same input →\nsame output?"}
+    A(["f(x)"]) --> B{"Is it pure?"}
+    B -- Yes --> V{"f(f(x)) = f(x)?"}
+    V -- Yes --> D1["Pure · Value-idempotent"]
+    V -- No --> D2["Pure · Not value-idempotent"]
+    B -- No --> F{"Same input →\nsame output?"}
     F -- Yes --> I1{"Same effect on\nrepeated calls?"}
     F -- No --> I2{"Same effect on\nrepeated calls?"}
     I1 -- Yes --> G1["Impure · Deterministic · Effect-idempotent"]
@@ -206,6 +206,6 @@ These distinctions have direct, practical consequences:
 
 Three properties, three questions:
 
-1.  **Has effects?** No → *pure* (and automatically deterministic, trivially effect-idempotent). But check value-idempotency.
+1.  **Is it pure?** Yes → automatically deterministic, trivially effect-idempotent. But check value-idempotency.
 2.  **Same input, same output?** Yes → *deterministic*. No → *nondeterministic*.
 3.  **Same effect on repeated calls?** Yes → *effect-idempotent*. No → not.
